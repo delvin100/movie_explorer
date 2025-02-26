@@ -8,8 +8,8 @@
 /* Body Styling */
 body {
   font-family: 'Poppins', sans-serif;
-  background: #1a1a1a; /* Dark mode background */
-  color: #fff3b0; /* Light yellowish text */
+  background: #1a1a1a;
+  color: #fff3b0;
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
@@ -19,7 +19,7 @@ body {
 header {
   background: linear-gradient(90deg, rgba(28, 7, 7, 0.95), rgba(139, 46, 46, 0.9));
   text-align: center;
-  padding: 1.5625rem; /* 25px in rem */
+  padding: 1.5625rem;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
   border-bottom: 4px solid #ff4040;
 }
@@ -29,7 +29,7 @@ header h1 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 3px;
-  color: #ffd700; /* Bright yellow for header */
+  color: #ffd700;
   text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 5px rgba(255, 64, 64, 0.6);
 }
 
@@ -37,39 +37,39 @@ header h1 {
 .search-form {
   display: flex;
   justify-content: center;
-  margin: 2.5rem 0; /* 40px in rem */
+  margin: 2.5rem 0;
   position: relative;
 }
 
 .search-form input {
-  padding: 0.875rem 1.25rem; /* 14px 20px in rem */
+  padding: 0.875rem 1.25rem;
   font-size: 1.1rem;
   border: none;
   border-radius: 50px;
-  width: 20rem; /* 320px in rem */
+  width: 20rem;
   outline: none;
-  background: rgba(255, 255, 255, 0.1); /* Adjusted for dark mode */
-  color: #fff3b0; /* Light yellowish for input text */
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff3b0;
   transition: all 0.4s ease;
   box-shadow: inset 0 0 5px rgba(255, 64, 64, 0.4);
 }
 
 .search-form input:focus {
-  width: 23.75rem; /* 380px in rem */
+  width: 23.75rem;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 15px rgba(255, 64, 64, 0.8), inset 0 0 5px rgba(255, 128, 128, 0.5);
 }
 
 .search-form button {
-  padding: 0.875rem 1.875rem; /* 14px 30px in rem */
+  padding: 0.875rem 1.875rem;
   font-size: 1.1rem;
   background: linear-gradient(45deg, #ff4040, #ff8080);
-  color: #fff; /* White for button text */
+  color: #fff;
   font-weight: 600;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  margin-left: 0.9375rem; /* 15px in rem */
+  margin-left: 0.9375rem;
   transition: all 0.4s ease;
 }
 
@@ -80,13 +80,13 @@ header h1 {
 /* Main Section */
 .home-main {
   text-align: center;
-  padding: 1.875rem; /* 30px in rem */
+  padding: 1.875rem;
 }
 
 .home-main p {
   font-size: 1.4rem;
   font-weight: 500;
-  color: #ffea80; /* Soft yellow for main text */
+  color: #ffea80;
   text-shadow: 0 0 10px rgba(255, 234, 128, 0.4);
 }
 
@@ -94,43 +94,80 @@ header h1 {
 #main {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5625rem; /* 25px in rem */
+  gap: 1.5625rem;
   justify-content: center;
-  padding: 1.875rem; /* 30px in rem */
+  padding: 1.875rem;
 }
 
 .movie {
-  background: #000000; /* Black for dark mode only */
+  background: #000000;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-  width: 15rem; /* 240px in rem */
+  width: 15rem;
+  height: 25rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.6s ease;
   position: relative;
+  perspective: 1000px;
 }
 
-.movie:hover {
-  transform: scale(1.08) translateY(-0.625rem); /* -10px in rem */
+.movie:hover:not(.flipped) {
+  transform: scale(1.08) translateY(-0.625rem);
   box-shadow: 0 10px 30px rgba(255, 64, 64, 0.7), 0 0 20px rgba(255, 128, 128, 0.5);
+}
+
+.movie .card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.movie.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.movie .card-front, .movie .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+}
+
+.movie .card-front {
+  z-index: 2;
+  background: #000000;
+}
+
+.movie .card-back {
+  transform: rotateY(180deg);
+  background: #000000;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #fff3b0;
 }
 
 .movie img {
   width: 100%;
-  height: 20rem; /* 320px in rem */
+  height: 20rem;
   object-fit: cover;
   border-bottom: 4px solid #ff4040;
 }
 
 .movie-info {
-  padding: 0.9375rem; /* 15px in rem */
+  padding: 0.9375rem;
   text-align: center;
 }
 
 .movie-info h3 {
   font-size: 1.4rem;
-  margin-bottom: 0.75rem; /* 12px in rem */
-  color: #ffd700; /* Bright yellow for movie titles */
+  margin-bottom: 0.75rem;
+  color: #ffd700;
   text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
   word-wrap: break-word;
   max-height: 4.2rem;
@@ -138,29 +175,30 @@ header h1 {
   text-overflow: ellipsis;
 }
 
-/* Rating Styles */
-.movie-info span {
-  font-size: 1.1rem;
-  padding: 0.5rem 0.9375rem; /* 8px 15px in rem */
-  border-radius: 12px;
+.card-back p {
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  color: #ffea80;
+  overflow-y: auto;
+  max-height: 8rem; /* Adjusted for button space */
+}
+
+.card-back button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background: linear-gradient(45deg, #ff4040, #ff8080);
+  color: #fff;
   font-weight: 600;
-  display: inline-block;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 0.25rem 0;
+  transition: all 0.3s ease;
 }
 
-.green {
-  background: linear-gradient(45deg, #00b359, #66e699);
-  color: #1c0707; /* Dark red for contrast */
-}
-
-.orange {
-  background: linear-gradient(45deg, #ff6600, #ffaa66);
-  color: #1c0707; /* Dark red for contrast */
-}
-
-.red {
+.card-back button:hover {
   background: linear-gradient(45deg, #ff1a1a, #ff6666);
-  color: #fff3b0; /* Light yellowish for red rating */
+  transform: scale(1.1);
 }
 
 /* Popup Styles */
@@ -180,21 +218,21 @@ header h1 {
 
 .popup-content {
   background: linear-gradient(135deg, rgba(139, 46, 46, 0.9), rgba(255, 64, 64, 0.7));
-  padding: 1.875rem; /* 30px in rem */
+  padding: 1.875rem;
   border-radius: 20px;
-  max-width: 34.375rem; /* 550px in rem */
+  max-width: 34.375rem;
   width: 90%;
   text-align: center;
-  color: #fff3b0; /* Light yellowish for popup text */
+  color: #fff3b0;
   box-shadow: 0 8px 25px rgba(255, 64, 64, 0.5), 0 0 40px rgba(255, 128, 128, 0.3);
   border: 2px solid #ff8080;
   position: relative;
 }
 
 .popup h2 {
-  margin-bottom: 1.25rem; /* 20px in rem */
+  margin-bottom: 1.25rem;
   font-size: 2rem;
-  color: #ffd700; /* Bright yellow for popup title */
+  color: #ffd700;
   text-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
   word-wrap: break-word;
   max-height: 6rem;
@@ -204,20 +242,20 @@ header h1 {
 
 .popup p {
   font-size: 1.1rem;
-  margin-bottom: 1.5625rem; /* 25px in rem */
-  color: #ffea80; /* Soft yellow for popup description */
+  margin-bottom: 1.5625rem;
+  color: #ffea80;
 }
 
 .popup button {
-  padding: 0.75rem 1.875rem; /* 12px 30px in rem */
+  padding: 0.75rem 1.875rem;
   font-size: 1.1rem;
   background: linear-gradient(45deg, #ff4040, #ff8080);
-  color: #ffe066; /* Medium yellow for button text */
+  color: #ffe066;
   font-weight: 600;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  margin: 0.5rem; /* 8px in rem */
+  margin: 0.5rem;
   transition: all 0.4s ease;
 }
 
@@ -228,7 +266,7 @@ header h1 {
 }
 
 #trailerContainer {
-  margin: 1.25rem 0; /* 20px in rem */
+  margin: 1.25rem 0;
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(255, 64, 64, 0.4);
@@ -236,21 +274,21 @@ header h1 {
 
 #trailerFrame {
   width: 100%;
-  height: 19.6875rem; /* 315px in rem */
+  height: 19.6875rem;
   border: none;
 }
 
 /* Fixed Buttons */
 #homeButton, #watchlistBtn {
-  padding: 0.875rem 1.875rem; /* 14px 30px in rem */
+  padding: 0.875rem 1.875rem;
   font-size: 1.1rem;
   background: linear-gradient(45deg, #ff4040, #ff8080);
-  color: #ffe066; /* Medium yellow for button text */
+  color: #ffe066;
   font-weight: 600;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  margin: 1.25rem auto; /* 20px in rem */
+  margin: 1.25rem auto;
   display: block;
   transition: all 0.4s ease;
 }
@@ -263,17 +301,17 @@ header h1 {
 
 .help-button {
   position: fixed;
-  bottom: 1.25rem; /* 20px in rem */
+  bottom: 1.25rem;
   right: 1.25rem;
   background-color: #28a745;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem; /* 12px 24px in rem */
+  padding: 0.75rem 1.5rem;
   border-radius: 50px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  font-size: 1rem; /* 16px in rem */
+  font-size: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, background-color 0.3s ease;
   animation: pulse 1.5s infinite;
@@ -291,25 +329,25 @@ header h1 {
 }
 
 .help-icon {
-  width: 1.25rem; /* 20px in rem */
+  width: 1.25rem;
   height: 1.25rem;
-  margin-right: 0.5rem; /* 8px in rem */
+  margin-right: 0.5rem;
 }
 
 /* Language Section */
 .language-section {
-  margin: 2.5rem 0; /* 40px in rem, from inline */
+  margin: 2.5rem 0;
 }
 
 .language-controls {
   display: flex;
   justify-content: center;
-  gap: 1.25rem; /* 20px in rem */
+  gap: 1.25rem;
   margin: 1.25rem 0;
 }
 
 .language-controls button {
-  padding: 0.75rem 1.875rem; /* 12px 30px in rem */
+  padding: 0.75rem 1.875rem;
   font-size: 1.1rem;
   background: linear-gradient(45deg, #ff4040, #ff8080);
   color: #ffe066;
@@ -333,22 +371,22 @@ header h1 {
 
 /* Featured Grid */
 .featured-grid {
-  display: grid; /* Updated from flex to match inline */
-  grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr)); /* 220px in rem */
-  gap: 1.25rem; /* 20px in rem */
-  padding: 1.875rem; /* 30px in rem */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr));
+  gap: 1.25rem;
+  padding: 1.875rem;
 }
 
 /* Spinner */
 .spinner {
   display: none;
-  width: 2.5rem; /* 40px in rem */
+  width: 2.5rem;
   height: 2.5rem;
   border: 4px solid rgba(255, 64, 64, 0.3);
   border-top: 4px solid #ff4040;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin: 1.25rem auto; /* 20px in rem */
+  margin: 1.25rem auto;
 }
 
 @keyframes spin {
@@ -358,172 +396,42 @@ header h1 {
 
 /* Responsive Adjustments */
 @media screen and (max-width: 768px) {
-  header {
-    padding: 1rem;
-  }
-
-  header h1 {
-    font-size: 2rem;
-  }
-
-  .search-form {
-    flex-direction: column;
-    gap: 0.625rem; /* 10px in rem */
-    margin: 1.5rem 0;
-  }
-
-  .search-form input {
-    width: 100%;
-    max-width: 18rem; /* Adjust for tablets */
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .search-form button {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.9rem;
-    margin-left: 0;
-  }
-
-  .home-main {
-    padding: 1.25rem;
-  }
-
-  .home-main p {
-    font-size: 1.2rem;
-  }
-
-  #main, .featured-grid {
-    gap: 1rem;
-    padding: 1.25rem;
-  }
-
-  .movie {
-    width: 100%;
-    max-width: 13.75rem; /* 220px in rem */
-  }
-
-  .movie img {
-    height: 15rem; /* Adjusted for tablets */
-  }
-
-  .language-section {
-    margin: 1.5rem 0;
-  }
-
-  .language-controls, .genre-controls {
-    gap: 0.625rem;
-  }
-
-  .language-controls button, .genre-controls button {
-    padding: 0.625rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .popup-content {
-    padding: 1.25rem;
-    max-width: 90%;
-  }
-
-  .popup h2 {
-    font-size: 1.5rem;
-  }
-
-  .popup p {
-    font-size: 0.9rem;
-  }
-
-  .popup button {
-    padding: 0.625rem 1.25rem;
-    font-size: 0.9rem;
-  }
-
-  #homeButton, #watchlistBtn {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.9rem;
-  }
-
-  .help-button {
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
-  }
+  header { padding: 1rem; }
+  header h1 { font-size: 2rem; }
+  .search-form { flex-direction: column; gap: 0.625rem; margin: 1.5rem 0; }
+  .search-form input { width: 100%; max-width: 18rem; padding: 0.75rem 1rem; font-size: 0.9rem; }
+  .search-form button { padding: 0.75rem 1.25rem; font-size: 0.9rem; margin-left: 0; }
+  .home-main { padding: 1.25rem; }
+  .home-main p { font-size: 1.2rem; }
+  #main, .featured-grid { gap: 1rem; padding: 1.25rem; }
+  .movie { width: 100%; max-width: 13.75rem; height: 20rem; }
+  .movie img { height: 15rem; }
+  .language-section { margin: 1.5rem 0; }
+  .language-controls, .genre-controls { gap: 0.625rem; }
+  .language-controls button, .genre-controls button { padding: 0.625rem 1rem; font-size: 0.9rem; }
+  .popup-content { padding: 1.25rem; max-width: 90%; }
+  .popup h2 { font-size: 1.5rem; }
+  .popup p { font-size: 0.9rem; }
+  .popup button { padding: 0.625rem 1.25rem; font-size: 0.9rem; }
+  #homeButton, #watchlistBtn { padding: 0.75rem 1.25rem; font-size: 0.9rem; }
+  .help-button { padding: 0.625rem 1rem; font-size: 0.875rem; }
 }
 
 @media screen and (max-width: 480px) {
-  header {
-    padding: 0.625rem;
-  }
-
-  header h1 {
-    font-size: 1.5rem;
-  }
-
-  .search-form input {
-    max-width: 15rem; /* Adjusted for phones */
-    padding: 0.625rem 0.875rem;
-    font-size: 0.8rem;
-  }
-
-  .search-form button {
-    padding: 0.625rem 1rem;
-    font-size: 0.8rem;
-  }
-
-  .home-main p {
-    font-size: 1rem;
-  }
-
-  #main, .featured-grid {
-    grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr)); /* 140px in rem */
-    padding: 0.625rem;
-  }
-
-  .movie {
-    max-width: 11.25rem; /* 180px in rem */
-  }
-
-  .movie img {
-    height: 12.5rem; /* Adjusted for phones */
-  }
-
-  .movie-info h3 {
-    font-size: 1.2rem;
-  }
-
-  .language-controls button, .genre-controls button {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
-  }
-
-  .popup-content {
-    padding: 0.9375rem;
-  }
-
-  .popup h2 {
-    font-size: 1.2rem;
-  }
-
-  .popup p {
-    font-size: 0.8rem;
-  }
-
-  .popup button {
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-  }
-
-  #homeButton, #watchlistBtn {
-    padding: 0.625rem 1rem;
-    font-size: 0.8rem;
-  }
-
-  .help-button {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-  }
-
-  .help-icon {
-    width: 1rem;
-    height: 1rem;
-  }
+  header { padding: 0.625rem; }
+  header h1 { font-size: 1.5rem; }
+  .search-form input { max-width: 15rem; padding: 0.625rem 0.875rem; font-size: 0.8rem; }
+  .search-form button { padding: 0.625rem 1rem; font-size: 0.8rem; }
+  .home-main p { font-size: 1rem; }
+  #main, .featured-grid { grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr)); padding: 0.625rem; }
+  .movie { max-width: 11.25rem; height: 18rem; }
+  .movie img { height: 12.5rem; }
+  .movie-info h3 { font-size: 1.2rem; }
+  .language-controls button, .genre-controls button { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+  .popup-content { padding: 0.9375rem; }
+  .popup h2 { font-size: 1.2rem; }
+  .popup p { font-size: 0.8rem; }
+  .popup button { padding: 0.5rem 1rem; font-size: 0.8rem; }
+  .help-button { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+  .help-icon { width: 1rem; height: 1rem; }
 }

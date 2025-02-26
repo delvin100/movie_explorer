@@ -15,7 +15,6 @@ const TELEGRAM_API_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
 const BLOCKED_KEYWORDS = ['adult', 'xxx', 'porn', 'erotic', 'sex', '18+', 'hot', 'nude'];
 
-// Language-specific API URLs
 const LANGUAGE_APIS = {
     malayalam: `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}&include_adult=false&with_original_language=ml&vote_count.gte=20`,
     tamil: `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}&include_adult=false&with_original_language=ta&vote_count.gte=20`,
@@ -23,12 +22,12 @@ const LANGUAGE_APIS = {
     english: `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}&include_adult=false&with_original_language=en&vote_count.gte=20`
 };
 
-// Genre IDs (from TMDb)
 const GENRES = {
     action: 28, comedy: 35, drama: 18, horror: 27, romance: 10749, thriller: 53, scifi: 878
 };
 
-// Load initial content
+let lastFlippedCard = null;
+
 document.addEventListener("DOMContentLoaded", () => {
     const genre = localStorage.getItem('preferredGenre');
     const mainUrl = genre ? `${LANGUAGE_APIS.malayalam}&with_genres=${genre}` : LANGUAGE_APIS.malayalam;
@@ -37,14 +36,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('homeButton').addEventListener('click', () => window.location.href = 'index.html');
     document.getElementById('watchlistBtn').addEventListener('click', showWatchlist);
-    // Removed theme-switching logic
 });
 
 function setupLanguageSections() {
     ['malayalam', 'tamil', 'hindi', 'english'].forEach(lang => {
         const genreContainer = document.getElementById(`${lang}Genres`);
         const movieContainer = document.getElementById(`${lang}Movies`);
-        if (genreContainer && movieContainer) { // Null check
+        if (genreContainer && movieContainer) {
             setupGenreButtons(lang, genreContainer, movieContainer);
             getMoviesByLanguage(LANGUAGE_APIS[lang], movieContainer, lang, 60);
         } else {
@@ -71,15 +69,24 @@ function toggleActiveGenreButton(activeBtn, container) {
 }
 
 async function getMovies(url) {
+    if (!main) {
+        console.error('Main element not found');
+        return;
+    }
     spinner.style.display = 'block';
     try {
         const res = await fetch(url);
-        if (!res.ok) throw new Error('Failed to fetch movies');
+        if (!res.ok) throw new Error(`Failed to fetch movies: ${res.status}`);
         const data = await res.json();
-        const safeMovies = filterSafeMovies(data.results);
-        showMovies(safeMovies);
+        const safeMovies = filterSafeMovies(data.results || []);
+        if (safeMovies.length === 0) {
+            main.innerHTML = '<p>No movies found.</p>';
+        } else {
+            showMovies(safeMovies);
+        }
     } catch (error) {
         console.error('Error fetching movies:', error);
+        main.innerHTML = '<p>Error loading movies. Please try again later.</p>';
         showPopup('❌ Error fetching movie data.');
     } finally {
         spinner.style.display = 'none';
@@ -87,11 +94,20 @@ async function getMovies(url) {
 }
 
 async function getMoviesByLanguage(url, container, lang, limit = 60) {
+    if (!container) {
+        console.error(`Container for ${lang} not found`);
+        return;
+    }
     try {
         const movies = await fetchMoviesAcrossPages(url, Math.ceil(limit / 20), limit);
-        showMoviesInContainer(movies, container, lang);
+        if (movies.length === 0) {
+            container.innerHTML = '<p>No movies found.</p>';
+        } else {
+            showMoviesInContainer(movies, container, lang);
+        }
     } catch (error) {
         console.error(`Error fetching ${lang} movies:`, error);
+        container.innerHTML = '<p>Error loading movies.</p>';
         showPopup(`❌ Error fetching ${lang} movies.`);
     }
 }
@@ -101,9 +117,9 @@ async function fetchMoviesAcrossPages(url, pages, limit) {
     for (let page = 1; page <= pages; page++) {
         const pageUrl = url.includes('trending') ? url : `${url}&page=${page}`;
         const res = await fetch(pageUrl);
-        if (!res.ok) throw new Error(`Failed to fetch page ${page}`);
+        if (!res.ok) throw new Error(`Failed to fetch page ${page}: ${res.status}`);
         const data = await res.json();
-        movies.push(...(data.results || data.movies));
+        movies.push(...(data.results || data.movies || []));
     }
     return filterSafeMovies(movies).slice(0, limit);
 }
@@ -119,6 +135,10 @@ function filterSafeMovies(movies) {
 
 function showMovies(movies) {
     main.innerHTML = '';
+    if (movies.length === 0) {
+        main.innerHTML = '<p>No movies to display.</p>';
+        return;
+    }
     movies.forEach(movie => {
         const movieEl = createMovieElement(movie);
         main.appendChild(movieEl);
@@ -127,6 +147,10 @@ function showMovies(movies) {
 
 function showMoviesInContainer(movies, container, lang) {
     container.innerHTML = '';
+    if (movies.length === 0) {
+        container.innerHTML = '<p>No movies to display.</p>';
+        return;
+    }
     movies.forEach(movie => {
         const movieEl = createMovieElement(movie);
         container.appendChild(movieEl);
@@ -139,16 +163,37 @@ function createMovieElement(movie) {
     movieEl.classList.add('movie');
     const posterUrl = poster_path ? IMG_PATH + poster_path : 'path_to_default_image.jpg';
     movieEl.innerHTML = `
-        <img src="${posterUrl}" loading="lazy" alt="${title}">
-        <div class="movie-info">
-            <h3>${title}</h3>
-            <button class="add-watchlist" data-id="${id}" data-title="${title}" data-poster="${posterUrl}">Add to Watchlist</button>
-            <button class="watch-movie" data-title="${title}">Watch Movie</button>
+        <div class="card-inner">
+            <div class="card-front">
+                <img src="${posterUrl}" loading="lazy" alt="${title}">
+                <div class="movie-info">
+                    <h3>${title}</h3>
+                </div>
+            </div>
+            <div class="card-back">
+                <h3>${title}</h3>
+                <p>${overview || 'No overview available.'}</p>
+                <button class="add-watchlist" data-id="${id}" data-title="${title}" data-poster="${posterUrl}">Add to Watchlist</button>
+                <button class="more" data-title="${title}" data-overview="${overview || 'No overview available.'}">More</button>
+            </div>
         </div>
     `;
-    movieEl.querySelector('img').addEventListener('click', () => openMoviePopUp(title, overview));
-    movieEl.querySelector('.add-watchlist').addEventListener('click', addToWatchlist);
-    movieEl.querySelector('.watch-movie').addEventListener('click', () => watchMovie(title));
+    movieEl.addEventListener('click', () => {
+        if (lastFlippedCard && lastFlippedCard !== movieEl) {
+            lastFlippedCard.classList.remove('flipped');
+        }
+        movieEl.classList.toggle('flipped');
+        lastFlippedCard = movieEl.classList.contains('flipped') ? movieEl : null;
+    });
+    movieEl.querySelector('.add-watchlist').addEventListener('click', (e) => {
+        e.stopPropagation();
+        addToWatchlist(e);
+    });
+    movieEl.querySelector('.more').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const { title, overview } = e.target.dataset;
+        openMorePopup(title, overview);
+    });
     return movieEl;
 }
 
@@ -179,42 +224,83 @@ function showWatchlist() {
         const movieEl = document.createElement('div');
         movieEl.classList.add('movie');
         movieEl.innerHTML = `
-            <img src="${item.poster}" loading="lazy" alt="${item.title}">
-            <div class="movie-info">
-                <h3>${item.title}</h3>
-                <button class="remove-watchlist" data-id="${item.id}">Remove</button>
-                <button class="watch-movie" data-title="${item.title}">Watch Movie</button>
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="${item.poster}" loading="lazy" alt="${item.title}">
+                    <div class="movie-info">
+                        <h3>${item.title}</h3>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <h3>${item.title}</h3>
+                    <button class="remove-watchlist" data-id="${item.id}">Remove</button>
+                    <button class="more" data-title="${item.title}" data-overview="Watchlist item">More</button>
+                </div>
             </div>
         `;
-        main.appendChild(movieEl);
-        movieEl.querySelector('.remove-watchlist').addEventListener('click', () => {
+        movieEl.addEventListener('click', () => {
+            if (lastFlippedCard && lastFlippedCard !== movieEl) {
+                lastFlippedCard.classList.remove('flipped');
+            }
+            movieEl.classList.toggle('flipped');
+            lastFlippedCard = movieEl.classList.contains('flipped') ? movieEl : null;
+        });
+        movieEl.querySelector('.remove-watchlist').addEventListener('click', (e) => {
+            e.stopPropagation();
             watchlist.splice(watchlist.findIndex(i => i.id === item.id), 1);
             localStorage.setItem('watchlist', JSON.stringify(watchlist));
             showWatchlist();
         });
-        movieEl.querySelector('.watch-movie').addEventListener('click', () => watchMovie(item.title));
+        movieEl.querySelector('.more').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const { title, overview } = e.target.dataset;
+            openMorePopup(title, overview);
+        });
+        main.appendChild(movieEl);
     });
 }
 
-async function watchMovie(movieTitle) {
+async function watchMovie(movieTitle, trailerContainer) {
     try {
         const response = await fetch(`${YOUTUBE_SEARCH_API}?part=snippet&q=${encodeURIComponent(movieTitle + ' full movie')}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`);
-        if (!response.ok) throw new Error('Failed to fetch movie');
+        if (!response.ok) throw new Error(`Failed to fetch movie: ${response.status}`);
         const data = await response.json();
         if (data.items && data.items.length > 0) {
             const videoId = data.items[0].id.videoId;
-            window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+            document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            trailerContainer.style.display = 'block';
+            document.getElementById('watchMovieButton').textContent = 'Hide Movie';
         } else {
-            showPopup('❌ Full movie not found on YouTube.');
+            document.getElementById('trailerContainer').style.display = 'none';
+            document.getElementById('trailerContainer').innerHTML = '<p style="color: #ffea80;">❌ Full movie not found on YouTube.</p>';
         }
     } catch (error) {
         console.error('Error fetching movie:', error);
-        showPopup('❌ Error loading movie. Please try again.');
+        document.getElementById('trailerContainer').style.display = 'none';
+        document.getElementById('trailerContainer').innerHTML = '<p style="color: #ffea80;">❌ Error loading movie. Please try again.</p>';
     }
 }
 
-function openMoviePopUp(movieTitle, overviewText) {
-    if (!movieTitle || !overviewText) return;
+async function showTrailer(movieTitle, trailerContainer) {
+    try {
+        const response = await fetch(`${YOUTUBE_SEARCH_API}?part=snippet&q=${encodeURIComponent(movieTitle + ' official trailer')}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`);
+        if (!response.ok) throw new Error(`Failed to fetch trailer: ${response.status}`);
+        const data = await response.json();
+        if (data.items && data.items.length > 0) {
+            const videoId = data.items[0].id.videoId;
+            document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            trailerContainer.style.display = 'block';
+            document.getElementById('trailerButton').textContent = 'Hide Trailer';
+        } else {
+            showPopup('❌ No trailer found for this movie.');
+        }
+    } catch (error) {
+        console.error('Error fetching trailer:', error);
+        showPopup('❌ Error loading trailer. Please try again.');
+    }
+}
+
+function openMorePopup(movieTitle, overviewText) {
     const moviePopUp = document.createElement('div');
     moviePopUp.classList.add('popup');
     moviePopUp.innerHTML = `
@@ -231,11 +317,12 @@ function openMoviePopUp(movieTitle, overviewText) {
         </div>
     `;
     document.body.appendChild(moviePopUp);
-    
+
     const closeButton = document.getElementById('closePopUpButton');
     const messageButton = document.getElementById('messageButton');
     const trailerButton = document.getElementById('trailerButton');
     const watchMovieButton = document.getElementById('watchMovieButton');
+    const trailerContainer = document.getElementById('trailerContainer');
 
     closeButton.addEventListener('click', () => moviePopUp.remove());
     messageButton.addEventListener('click', () => {
@@ -243,34 +330,23 @@ function openMoviePopUp(movieTitle, overviewText) {
         window.location.href = 'form.html';
     });
     trailerButton.addEventListener('click', () => {
-        const trailerContainer = document.getElementById('trailerContainer');
-        if (trailerContainer.style.display === 'none') showTrailer(movieTitle, trailerContainer);
-        else {
+        if (trailerContainer.style.display === 'none') {
+            showTrailer(movieTitle, trailerContainer);
+        } else {
             trailerContainer.style.display = 'none';
             trailerButton.textContent = 'Watch Trailer';
             document.getElementById('trailerFrame').src = '';
         }
     });
-    watchMovieButton.addEventListener('click', () => watchMovie(movieTitle));
-}
-
-async function showTrailer(movieTitle, trailerContainer) {
-    try {
-        const response = await fetch(`${YOUTUBE_SEARCH_API}?part=snippet&q=${encodeURIComponent(movieTitle + ' official trailer')}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`);
-        if (!response.ok) throw new Error('Failed to fetch trailer');
-        const data = await response.json();
-        if (data.items && data.items.length > 0) {
-            const videoId = data.items[0].id.videoId;
-            document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-            trailerContainer.style.display = 'block';
-            document.getElementById('trailerButton').textContent = 'Hide Trailer';
+    watchMovieButton.addEventListener('click', () => {
+        if (trailerContainer.style.display === 'none') {
+            watchMovie(movieTitle, trailerContainer);
         } else {
-            showPopup('❌ No trailer found for this movie.');
+            trailerContainer.style.display = 'none';
+            watchMovieButton.textContent = 'Watch Movie';
+            document.getElementById('trailerFrame').src = '';
         }
-    } catch (error) {
-        console.error('Error fetching trailer:', error);
-        showPopup('❌ Error loading trailer. Please try again.');
-    }
+    });
 }
 
 function showPopup(message) {
@@ -297,7 +373,7 @@ function showHelpPopup() {
     popupContent.style.transform = 'translate(-50%, -50%)';
     popupContent.style.maxWidth = '400px';
     popupContent.style.textAlign = 'center';
-    popupContent.style.backgroundColor = '#000000'; // Updated for dark mode consistency
+    popupContent.style.backgroundColor = '#000000';
     popupContent.style.padding = '70px';
     popupContent.innerHTML = `
         <h1 style="color: #28a745; margin-bottom: 15px; font-size: 24px;">Need Help?</h1>
