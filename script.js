@@ -37,15 +37,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('homeButton').addEventListener('click', () => window.location.href = 'index.html');
     document.getElementById('watchlistBtn').addEventListener('click', showWatchlist);
-    if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';
+    // Removed theme-switching logic
 });
 
 function setupLanguageSections() {
     ['malayalam', 'tamil', 'hindi', 'english'].forEach(lang => {
         const genreContainer = document.getElementById(`${lang}Genres`);
         const movieContainer = document.getElementById(`${lang}Movies`);
-        setupGenreButtons(lang, genreContainer, movieContainer);
-        getMoviesByLanguage(LANGUAGE_APIS[lang], movieContainer, lang, 60);
+        if (genreContainer && movieContainer) { // Null check
+            setupGenreButtons(lang, genreContainer, movieContainer);
+            getMoviesByLanguage(LANGUAGE_APIS[lang], movieContainer, lang, 60);
+        } else {
+            console.error(`Missing elements for ${lang} section`);
+        }
     });
 }
 
@@ -75,10 +79,11 @@ async function getMovies(url) {
         const safeMovies = filterSafeMovies(data.results);
         showMovies(safeMovies);
     } catch (error) {
-        console.error(error);
-        showPopup("❌ Error fetching movie data.");
+        console.error('Error fetching movies:', error);
+        showPopup('❌ Error fetching movie data.');
+    } finally {
+        spinner.style.display = 'none';
     }
-    spinner.style.display = 'none';
 }
 
 async function getMoviesByLanguage(url, container, lang, limit = 60) {
@@ -86,7 +91,7 @@ async function getMoviesByLanguage(url, container, lang, limit = 60) {
         const movies = await fetchMoviesAcrossPages(url, Math.ceil(limit / 20), limit);
         showMoviesInContainer(movies, container, lang);
     } catch (error) {
-        console.error(error);
+        console.error(`Error fetching ${lang} movies:`, error);
         showPopup(`❌ Error fetching ${lang} movies.`);
     }
 }
@@ -96,7 +101,7 @@ async function fetchMoviesAcrossPages(url, pages, limit) {
     for (let page = 1; page <= pages; page++) {
         const pageUrl = url.includes('trending') ? url : `${url}&page=${page}`;
         const res = await fetch(pageUrl);
-        if (!res.ok) throw new Error('Failed to fetch movies');
+        if (!res.ok) throw new Error(`Failed to fetch page ${page}`);
         const data = await res.json();
         movies.push(...(data.results || data.movies));
     }
@@ -259,7 +264,9 @@ async function showTrailer(movieTitle, trailerContainer) {
             document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
             trailerContainer.style.display = 'block';
             document.getElementById('trailerButton').textContent = 'Hide Trailer';
-        } else showPopup('❌ No trailer found for this movie.');
+        } else {
+            showPopup('❌ No trailer found for this movie.');
+        }
     } catch (error) {
         console.error('Error fetching trailer:', error);
         showPopup('❌ Error loading trailer. Please try again.');
@@ -290,11 +297,11 @@ function showHelpPopup() {
     popupContent.style.transform = 'translate(-50%, -50%)';
     popupContent.style.maxWidth = '400px';
     popupContent.style.textAlign = 'center';
-    popupContent.style.backgroundColor = 'var(--card-bg)';
+    popupContent.style.backgroundColor = '#000000'; // Updated for dark mode consistency
     popupContent.style.padding = '70px';
     popupContent.innerHTML = `
         <h1 style="color: #28a745; margin-bottom: 15px; font-size: 24px;">Need Help?</h1>
-        <p style="color: var(--text); line-height: 1.5; font-size: 18px;">For assistance, watch the video below 👇</p>
+        <p style="color: #fff3b0; line-height: 1.5; font-size: 18px;">For assistance, watch the video below 👇</p>
         <a href="#" style="display: inline-block; margin: 15px 0; color: #28a745; text-decoration: none; font-weight: bold; font-size: 18px;">Click Here</a><br>
         <button id="closePopupButton" style="background-color: #28a745; color: #ffffff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Close</button>
     `;

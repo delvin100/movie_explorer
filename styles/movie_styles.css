@@ -8,8 +8,8 @@
 /* Body Styling */
 body {
   font-family: 'Poppins', sans-serif;
-  background: var(--background); /* Ensures #1a1a1a */
-  color: #fff3b0;
+  background: #1a1a1a; /* Dark mode background */
+  color: #fff3b0; /* Light yellowish text */
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
@@ -19,7 +19,7 @@ body {
 header {
   background: linear-gradient(90deg, rgba(28, 7, 7, 0.95), rgba(139, 46, 46, 0.9));
   text-align: center;
-  padding: 25px;
+  padding: 1.5625rem; /* 25px in rem */
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
   border-bottom: 4px solid #ff4040;
 }
@@ -37,39 +37,39 @@ header h1 {
 .search-form {
   display: flex;
   justify-content: center;
-  margin: 40px 0;
+  margin: 2.5rem 0; /* 40px in rem */
   position: relative;
 }
 
 .search-form input {
-  padding: 14px 20px;
+  padding: 0.875rem 1.25rem; /* 14px 20px in rem */
   font-size: 1.1rem;
   border: none;
   border-radius: 50px;
-  width: 320px;
+  width: 20rem; /* 320px in rem */
   outline: none;
-  background: rgb(255, 255, 255);
-  color: #ffffff; /* Light yellowish for input text */
+  background: rgba(255, 255, 255, 0.1); /* Adjusted for dark mode */
+  color: #fff3b0; /* Light yellowish for input text */
   transition: all 0.4s ease;
   box-shadow: inset 0 0 5px rgba(255, 64, 64, 0.4);
 }
 
 .search-form input:focus {
-  width: 380px;
+  width: 23.75rem; /* 380px in rem */
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 15px rgba(255, 64, 64, 0.8), inset 0 0 5px rgba(255, 128, 128, 0.5);
 }
 
 .search-form button {
-  padding: 14px 30px;
+  padding: 0.875rem 1.875rem; /* 14px 30px in rem */
   font-size: 1.1rem;
   background: linear-gradient(45deg, #ff4040, #ff8080);
-  color: #ffffff; /* Medium yellow for button text */
+  color: #fff; /* White for button text */
   font-weight: 600;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  margin-left: 15px;
+  margin-left: 0.9375rem; /* 15px in rem */
   transition: all 0.4s ease;
 }
 
@@ -80,7 +80,7 @@ header h1 {
 /* Main Section */
 .home-main {
   text-align: center;
-  padding: 30px;
+  padding: 1.875rem; /* 30px in rem */
 }
 
 .home-main p {
@@ -94,42 +94,42 @@ header h1 {
 #main {
   display: flex;
   flex-wrap: wrap;
-  gap: 25px;
+  gap: 1.5625rem; /* 25px in rem */
   justify-content: center;
-  padding: 30px;
+  padding: 1.875rem; /* 30px in rem */
 }
 
 .movie {
-  background: linear-gradient(135deg, rgba(28, 7, 7, 0.9), rgba(139, 46, 46, 0.7));
+  background: #000000; /* Black for dark mode only */
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-  width: 240px;
+  width: 15rem; /* 240px in rem */
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
 }
 
 .movie:hover {
-  transform: scale(1.08) translateY(-10px);
+  transform: scale(1.08) translateY(-0.625rem); /* -10px in rem */
   box-shadow: 0 10px 30px rgba(255, 64, 64, 0.7), 0 0 20px rgba(255, 128, 128, 0.5);
 }
 
 .movie img {
   width: 100%;
-  height: 320px;
+  height: 20rem; /* 320px in rem */
   object-fit: cover;
   border-bottom: 4px solid #ff4040;
 }
 
 .movie-info {
-  padding: 15px;
+  padding: 0.9375rem; /* 15px in rem */
   text-align: center;
 }
 
 .movie-info h3 {
   font-size: 1.4rem;
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem; /* 12px in rem */
   color: #ffd700; /* Bright yellow for movie titles */
   text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
   word-wrap: break-word;
@@ -141,7 +141,7 @@ header h1 {
 /* Rating Styles */
 .movie-info span {
   font-size: 1.1rem;
-  padding: 8px 15px;
+  padding: 0.5rem 0.9375rem; /* 8px 15px in rem */
   border-radius: 12px;
   font-weight: 600;
   display: inline-block;
@@ -180,9 +180,9 @@ header h1 {
 
 .popup-content {
   background: linear-gradient(135deg, rgba(139, 46, 46, 0.9), rgba(255, 64, 64, 0.7));
-  padding: 30px;
+  padding: 1.875rem; /* 30px in rem */
   border-radius: 20px;
-  max-width: 550px;
+  max-width: 34.375rem; /* 550px in rem */
   width: 90%;
   text-align: center;
   color: #fff3b0; /* Light yellowish for popup text */
@@ -192,7 +192,7 @@ header h1 {
 }
 
 .popup h2 {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem; /* 20px in rem */
   font-size: 2rem;
   color: #ffd700; /* Bright yellow for popup title */
   text-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
@@ -204,12 +204,12 @@ header h1 {
 
 .popup p {
   font-size: 1.1rem;
-  margin-bottom: 25px;
+  margin-bottom: 1.5625rem; /* 25px in rem */
   color: #ffea80; /* Soft yellow for popup description */
 }
 
 .popup button {
-  padding: 12px 30px;
+  padding: 0.75rem 1.875rem; /* 12px 30px in rem */
   font-size: 1.1rem;
   background: linear-gradient(45deg, #ff4040, #ff8080);
   color: #ffe066; /* Medium yellow for button text */
@@ -217,7 +217,7 @@ header h1 {
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  margin: 8px;
+  margin: 0.5rem; /* 8px in rem */
   transition: all 0.4s ease;
 }
 
@@ -228,7 +228,7 @@ header h1 {
 }
 
 #trailerContainer {
-  margin: 20px 0;
+  margin: 1.25rem 0; /* 20px in rem */
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(255, 64, 64, 0.4);
@@ -236,12 +236,13 @@ header h1 {
 
 #trailerFrame {
   width: 100%;
-  height: 315px;
+  height: 19.6875rem; /* 315px in rem */
   border: none;
 }
 
-#homeButton {
-  padding: 14px 30px;
+/* Fixed Buttons */
+#homeButton, #watchlistBtn {
+  padding: 0.875rem 1.875rem; /* 14px 30px in rem */
   font-size: 1.1rem;
   background: linear-gradient(45deg, #ff4040, #ff8080);
   color: #ffe066; /* Medium yellow for button text */
@@ -249,12 +250,12 @@ header h1 {
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  margin: 20px auto;
-  display: block; /* Center the button */
+  margin: 1.25rem auto; /* 20px in rem */
+  display: block;
   transition: all 0.4s ease;
 }
 
-#homeButton:hover {
+#homeButton:hover, #watchlistBtn:hover {
   background: linear-gradient(45deg, #ff1a1a, #ff6666);
   transform: scale(1.15);
   box-shadow: 0 0 20px rgba(255, 64, 64, 0.7);
@@ -262,17 +263,17 @@ header h1 {
 
 .help-button {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 1.25rem; /* 20px in rem */
+  right: 1.25rem;
   background-color: #28a745;
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 0.75rem 1.5rem; /* 12px 24px in rem */
   border-radius: 50px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem; /* 16px in rem */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, background-color 0.3s ease;
   animation: pulse 1.5s infinite;
@@ -290,81 +291,25 @@ header h1 {
 }
 
 .help-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
+  width: 1.25rem; /* 20px in rem */
+  height: 1.25rem;
+  margin-right: 0.5rem; /* 8px in rem */
 }
 
-#userForm {
-  display: none;
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+/* Language Section */
+.language-section {
+  margin: 2.5rem 0; /* 40px in rem, from inline */
 }
 
-/* New Styles for Language Section */
 .language-controls {
   display: flex;
   justify-content: center;
-  gap: 20px; /* Matches .fixed-buttons gap */
-  margin: 20px 0;
+  gap: 1.25rem; /* 20px in rem */
+  margin: 1.25rem 0;
 }
 
 .language-controls button {
-  padding: 12px 30px; /* Slightly smaller than .btn for distinction */
-  font-size: 1.1rem;
-  background: linear-gradient(45deg, #ff4040, #ff8080); /* Matches .search-form button */
-  color: #ffe066;
-  font-weight: 600;
-  border: none;
-  border-radius: 50px; /* Matches .search-form button */
-  cursor: pointer;
-  transition: all 0.4s ease; /* Matches .search-form button */
-}
-
-.language-controls button:hover {
-  background: linear-gradient(45deg, #ff1a1a, #ff6666);
-  transform: scale(1.15); /* Matches .search-form button */
-  box-shadow: 0 0 15px rgba(255, 64, 64, 0.8);
-}
-
-.language-controls button.active {
-  background: linear-gradient(45deg, #ff1a1a, #ff6666); /* Active state */
-  box-shadow: 0 0 20px rgba(255, 64, 64, 1);
-}
-
-.featured-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 25px; /* Matches #main */
-  justify-content: center;
-  padding: 30px; /* Matches #main */
-}
-
-/* Spinner (moved from inline style) */
-.spinner {
-  display: none;
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 64, 64, 0.3); /* Matches movie border */
-  border-top: 4px solid #ff4040;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 20px auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Watchlist Button */
-#watchlistBtn {
-  padding: 14px 30px;
+  padding: 0.75rem 1.875rem; /* 12px 30px in rem */
   font-size: 1.1rem;
   background: linear-gradient(45deg, #ff4040, #ff8080);
   color: #ffe066;
@@ -372,13 +317,213 @@ header h1 {
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  margin: 20px auto;
-  display: block;
   transition: all 0.4s ease;
 }
 
-#watchlistBtn:hover {
+.language-controls button:hover {
   background: linear-gradient(45deg, #ff1a1a, #ff6666);
   transform: scale(1.15);
-  box-shadow: 0 0 20px rgba(255, 64, 64, 0.7);
+  box-shadow: 0 0 15px rgba(255, 64, 64, 0.8);
+}
+
+.language-controls button.active {
+  background: linear-gradient(45deg, #ff1a1a, #ff6666);
+  box-shadow: 0 0 20px rgba(255, 64, 64, 1);
+}
+
+/* Featured Grid */
+.featured-grid {
+  display: grid; /* Updated from flex to match inline */
+  grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr)); /* 220px in rem */
+  gap: 1.25rem; /* 20px in rem */
+  padding: 1.875rem; /* 30px in rem */
+}
+
+/* Spinner */
+.spinner {
+  display: none;
+  width: 2.5rem; /* 40px in rem */
+  height: 2.5rem;
+  border: 4px solid rgba(255, 64, 64, 0.3);
+  border-top: 4px solid #ff4040;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 1.25rem auto; /* 20px in rem */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  header {
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .search-form {
+    flex-direction: column;
+    gap: 0.625rem; /* 10px in rem */
+    margin: 1.5rem 0;
+  }
+
+  .search-form input {
+    width: 100%;
+    max-width: 18rem; /* Adjust for tablets */
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .search-form button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    margin-left: 0;
+  }
+
+  .home-main {
+    padding: 1.25rem;
+  }
+
+  .home-main p {
+    font-size: 1.2rem;
+  }
+
+  #main, .featured-grid {
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .movie {
+    width: 100%;
+    max-width: 13.75rem; /* 220px in rem */
+  }
+
+  .movie img {
+    height: 15rem; /* Adjusted for tablets */
+  }
+
+  .language-section {
+    margin: 1.5rem 0;
+  }
+
+  .language-controls, .genre-controls {
+    gap: 0.625rem;
+  }
+
+  .language-controls button, .genre-controls button {
+    padding: 0.625rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .popup-content {
+    padding: 1.25rem;
+    max-width: 90%;
+  }
+
+  .popup h2 {
+    font-size: 1.5rem;
+  }
+
+  .popup p {
+    font-size: 0.9rem;
+  }
+
+  .popup button {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  #homeButton, #watchlistBtn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .help-button {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  header {
+    padding: 0.625rem;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  .search-form input {
+    max-width: 15rem; /* Adjusted for phones */
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8rem;
+  }
+
+  .search-form button {
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .home-main p {
+    font-size: 1rem;
+  }
+
+  #main, .featured-grid {
+    grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr)); /* 140px in rem */
+    padding: 0.625rem;
+  }
+
+  .movie {
+    max-width: 11.25rem; /* 180px in rem */
+  }
+
+  .movie img {
+    height: 12.5rem; /* Adjusted for phones */
+  }
+
+  .movie-info h3 {
+    font-size: 1.2rem;
+  }
+
+  .language-controls button, .genre-controls button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .popup-content {
+    padding: 0.9375rem;
+  }
+
+  .popup h2 {
+    font-size: 1.2rem;
+  }
+
+  .popup p {
+    font-size: 0.8rem;
+  }
+
+  .popup button {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  #homeButton, #watchlistBtn {
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .help-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .help-icon {
+    width: 1rem;
+    height: 1rem;
+  }
 }
