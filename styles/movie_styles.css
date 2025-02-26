@@ -1,0 +1,384 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1c0707, #4a1c1c, #8b2e2e);
+  color: #fff3b0; /* Light yellowish for body text */
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Header Styling */
+header {
+  background: linear-gradient(90deg, rgba(28, 7, 7, 0.95), rgba(139, 46, 46, 0.9));
+  text-align: center;
+  padding: 25px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  border-bottom: 4px solid #ff4040;
+}
+
+header h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #ffd700; /* Bright yellow for header */
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 5px rgba(255, 64, 64, 0.6);
+}
+
+/* Search Bar */
+.search-form {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+  position: relative;
+}
+
+.search-form input {
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 50px;
+  width: 320px;
+  outline: none;
+  background: rgb(255, 255, 255);
+  color: #ffffff; /* Light yellowish for input text */
+  transition: all 0.4s ease;
+  box-shadow: inset 0 0 5px rgba(255, 64, 64, 0.4);
+}
+
+.search-form input:focus {
+  width: 380px;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 15px rgba(255, 64, 64, 0.8), inset 0 0 5px rgba(255, 128, 128, 0.5);
+}
+
+.search-form button {
+  padding: 14px 30px;
+  font-size: 1.1rem;
+  background: linear-gradient(45deg, #ff4040, #ff8080);
+  color: #ffffff; /* Medium yellow for button text */
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-left: 15px;
+  transition: all 0.4s ease;
+}
+
+.search-form button:hover {
+  transform: scale(1.15);
+}
+
+/* Main Section */
+.home-main {
+  text-align: center;
+  padding: 30px;
+}
+
+.home-main p {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #ffea80; /* Soft yellow for main text */
+  text-shadow: 0 0 10px rgba(255, 234, 128, 0.4);
+}
+
+/* Movie Cards */
+#main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+  padding: 30px;
+}
+
+.movie {
+  background: linear-gradient(135deg, rgba(28, 7, 7, 0.9), rgba(139, 46, 46, 0.7));
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  width: 240px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.movie:hover {
+  transform: scale(1.08) translateY(-10px);
+  box-shadow: 0 10px 30px rgba(255, 64, 64, 0.7), 0 0 20px rgba(255, 128, 128, 0.5);
+}
+
+.movie img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-bottom: 4px solid #ff4040;
+}
+
+.movie-info {
+  padding: 15px;
+  text-align: center;
+}
+
+.movie-info h3 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  color: #ffd700; /* Bright yellow for movie titles */
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  word-wrap: break-word;
+  max-height: 4.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Rating Styles */
+.movie-info span {
+  font-size: 1.1rem;
+  padding: 8px 15px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: inline-block;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.green {
+  background: linear-gradient(45deg, #00b359, #66e699);
+  color: #1c0707; /* Dark red for contrast */
+}
+
+.orange {
+  background: linear-gradient(45deg, #ff6600, #ffaa66);
+  color: #1c0707; /* Dark red for contrast */
+}
+
+.red {
+  background: linear-gradient(45deg, #ff1a1a, #ff6666);
+  color: #fff3b0; /* Light yellowish for red rating */
+}
+
+/* Popup Styles */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(28, 7, 7, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+}
+
+.popup-content {
+  background: linear-gradient(135deg, rgba(139, 46, 46, 0.9), rgba(255, 64, 64, 0.7));
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 550px;
+  width: 90%;
+  text-align: center;
+  color: #fff3b0; /* Light yellowish for popup text */
+  box-shadow: 0 8px 25px rgba(255, 64, 64, 0.5), 0 0 40px rgba(255, 128, 128, 0.3);
+  border: 2px solid #ff8080;
+  position: relative;
+}
+
+.popup h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #ffd700; /* Bright yellow for popup title */
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+  word-wrap: break-word;
+  max-height: 6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.popup p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+  color: #ffea80; /* Soft yellow for popup description */
+}
+
+.popup button {
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  background: linear-gradient(45deg, #ff4040, #ff8080);
+  color: #ffe066; /* Medium yellow for button text */
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin: 8px;
+  transition: all 0.4s ease;
+}
+
+.popup button:hover {
+  background: linear-gradient(45deg, #ff1a1a, #ff6666);
+  transform: scale(1.15);
+  box-shadow: 0 0 15px rgba(255, 64, 64, 0.8);
+}
+
+#trailerContainer {
+  margin: 20px 0;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255, 64, 64, 0.4);
+}
+
+#trailerFrame {
+  width: 100%;
+  height: 315px;
+  border: none;
+}
+
+#homeButton {
+  padding: 14px 30px;
+  font-size: 1.1rem;
+  background: linear-gradient(45deg, #ff4040, #ff8080);
+  color: #ffe066; /* Medium yellow for button text */
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block; /* Center the button */
+  transition: all 0.4s ease;
+}
+
+#homeButton:hover {
+  background: linear-gradient(45deg, #ff1a1a, #ff6666);
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(255, 64, 64, 0.7);
+}
+
+.help-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  animation: pulse 1.5s infinite;
+}
+
+.help-button:hover {
+  background-color: #218838;
+  transform: scale(1.1);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.help-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+#userForm {
+  display: none;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* New Styles for Featured Section */
+.featured-controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Matches .fixed-buttons gap */
+  margin: 20px 0;
+}
+
+.featured-controls button {
+  padding: 12px 30px; /* Slightly smaller than .btn for distinction */
+  font-size: 1.1rem;
+  background: linear-gradient(45deg, #ff4040, #ff8080); /* Matches .search-form button */
+  color: #ffe066;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px; /* Matches .search-form button */
+  cursor: pointer;
+  transition: all 0.4s ease; /* Matches .search-form button */
+}
+
+.featured-controls button:hover {
+  background: linear-gradient(45deg, #ff1a1a, #ff6666);
+  transform: scale(1.15); /* Matches .search-form button */
+  box-shadow: 0 0 15px rgba(255, 64, 64, 0.8);
+}
+
+.featured-controls button.active {
+  background: linear-gradient(45deg, #ff1a1a, #ff6666); /* Active state */
+  box-shadow: 0 0 20px rgba(255, 64, 64, 1);
+}
+
+.featured-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px; /* Matches #main */
+  justify-content: center;
+  padding: 30px; /* Matches #main */
+}
+
+/* Spinner (moved from inline style) */
+.spinner {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 64, 64, 0.3); /* Matches movie border */
+  border-top: 4px solid #ff4040;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Watchlist Button */
+#watchlistBtn {
+  padding: 14px 30px;
+  font-size: 1.1rem;
+  background: linear-gradient(45deg, #ff4040, #ff8080);
+  color: #ffe066;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  transition: all 0.4s ease;
+}
+
+#watchlistBtn:hover {
+  background: linear-gradient(45deg, #ff1a1a, #ff6666);
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(255, 64, 64, 0.7);
+}

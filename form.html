@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/form_styles.css">
+    <title>User Details Form</title>
+    <style>
+        :root { --background: #fff; --text: #333; --card-bg: #f4f4f4; }
+        [data-theme="dark"] { --background: #1a1a1a; --text: #e0e0e0; --card-bg: #333; }
+        body { background: var(--background); color: var(--text); }
+        .error { color: red; font-size: 12px; display: none; }
+        input.invalid { border-color: red; }
+    </style>
+</head>
+<body>
+    <h1>Fill in your details</h1>
+    <form id="userForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <span class="error" id="nameError">Name should contain only letters and spaces.</span>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <span class="error" id="emailError">Please enter a valid email address.</span>
+        
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone" required maxlength="10">
+        <span class="error" id="phoneError">Phone must be 10 digits (0-9 only).</span>
+        
+        <label for="movieName">Selected Movie:</label>
+        <input type="text" id="movieName" name="movieName" readonly required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <button id="goBackButton">Go Back</button>
+
+    <script>
+        const BOT_TOKEN = "7635804333:AAG3bze_1AOGFsP2ytpw8439Cl6p4XI5XWk";
+        const CHAT_ID = "5379038515";
+        const TELEGRAM_API_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+        function isValidName(name) { return /^[A-Za-z\s]+$/.test(name); }
+        function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+        function isValidPhone(phone) { return /^[0-9]{10}$/.test(phone); }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectedMovie = localStorage.getItem('selectedMovie');
+            if (selectedMovie) document.getElementById("movieName").value = selectedMovie;
+            document.getElementById('goBackButton').addEventListener('click', () => window.location.href = 'movie.html');
+            if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';
+
+            // Real-time validation
+            ['name', 'email', 'phone'].forEach(id => {
+                document.getElementById(id).addEventListener('input', validateField);
+            });
+        });
+
+        function validateField(e) {
+            const id = e.target.id;
+            const value = e.target.value.trim();
+            const errorEl = document.getElementById(`${id}Error`);
+            let isValid = false;
+            if (id === 'name') isValid = isValidName(value);
+            if (id === 'email') isValid = isValidEmail(value);
+            if (id === 'phone') isValid = isValidPhone(value);
+            errorEl.style.display = isValid || !value ? 'none' : 'block';
+            e.target.classList.toggle('invalid', !isValid && value);
+        }
+
+        document.getElementById("userForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            let name = document.getElementById("name").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let phone = document.getElementById("phone").value.trim();
+            let movieName = document.getElementById("movieName").value;
+
+            if (!movieName) return showPopup("❌ Please select a movie before submitting.");
+            if (!isValidName(name)) return showPopup("❌ Name should contain only letters and spaces.");
+            if (!isValidEmail(email)) return showPopup("❌ Please enter a valid email address.");
+            if (!isValidPhone(phone)) return showPopup("❌ Phone number must be exactly 10 digits (0-9 only).");
+
+            let message = `📌 New User Submission:\n👤 Name: ${name}\n📧 Email: ${email}\n📱 Phone: ${phone}\n🎬 Movie: ${movieName}`;
+            fetch(TELEGRAM_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: CHAT_ID, text: message }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.ok) {
+                        showSuccessPopup();
+                        const selectedMovie = localStorage.getItem('selectedMovie');
+                        document.getElementById("userForm").reset();
+                        document.getElementById("movieName").value = selectedMovie || '';
+                    } else showPopup("❌ Error in message sending.");
+                })
+                .catch((error) => {
+                    console.error("❌ Error:", error);
+                    showPopup("❌ There was an error. Please try again.");
+                });
+        });
+
+        function showPopup(message) {
+            const popup = document.createElement('div');
+            popup.classList.add('popup');
+            popup.innerHTML = `
+                <div class="popup-content">
+                    <p>${message}</p>
+                    <button id="closePopupButton">Close</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
+            document.getElementById('closePopupButton').addEventListener('click', () => popup.remove());
+        }
+
+        function showSuccessPopup() {
+            const popup = document.createElement('div');
+            popup.classList.add('popup');
+            popup.innerHTML = `
+                <div class="popup-content">
+                    <p>✅ Form submitted successfully!<br>The movie will be sent to your email shortly...<br>Thanks for using Metflix! 😊</p>
+                    <button id="feedbackButton">Feedback</button>
+                    <button id="closePopupButton">Close</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
+            document.getElementById('feedbackButton').addEventListener('click', () => { popup.remove(); showFeedbackPopup(); });
+            document.getElementById('closePopupButton').addEventListener('click', () => {
+                popup.remove();
+                document.getElementById("movieName").value = localStorage.getItem('selectedMovie') || '';
+            });
+        }
+
+        function showFeedbackPopup() {
+            const popup = document.createElement('div');
+            popup.classList.add('popup');
+            popup.innerHTML = `
+                <div class="popup-content">
+                    <h2>Feedback</h2>
+                    <textarea id="feedbackText" placeholder="Enter your feedback here..." rows="5" required></textarea>
+                    <button id="submitFeedbackButton">Submit Feedback</button>
+                    <button id="closePopupButton">Close</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
+            document.getElementById('submitFeedbackButton').addEventListener('click', () => {
+                const feedbackText = document.getElementById('feedbackText').value.trim();
+                if (feedbackText) {
+                    const feedbackMessage = `📝 Feedback:\n${feedbackText}`;
+                    fetch(TELEGRAM_API_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ chat_id: CHAT_ID, text: feedbackMessage }),
+                    })
+                        .then((res) => res.json())
+                        .then((data) => {
+                            if (data.ok) { showPopup("✅ Feedback submitted successfully!<br>Thank you! 😊"); popup.remove(); }
+                            else showPopup("❌ Error submitting feedback.");
+                        })
+                        .catch((error) => showPopup("❌ There was an error. Please try again."));
+                } else showPopup("❌ Please enter feedback before submitting.");
+            });
+            document.getElementById('closePopupButton').addEventListener('click', () => {
+                popup.remove();
+                document.getElementById("movieName").value = localStorage.getItem('selectedMovie') || '';
+            });
+        }
+    </script>
+</body>
+</html>
