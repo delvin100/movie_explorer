@@ -8,7 +8,7 @@
 /* Body Styling */
 body {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #1c0707, #4a1c1c, #8b2e2e);
+  background: var(--background); /* Changed from gradient to use variable */
   color: #fff3b0; /* Light yellowish for body text */
   line-height: 1.6;
   min-height: 100vh;
@@ -306,15 +306,15 @@ header h1 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* New Styles for Featured Section */
-.featured-controls {
+/* New Styles for Language Section */
+.language-controls {
   display: flex;
   justify-content: center;
   gap: 20px; /* Matches .fixed-buttons gap */
   margin: 20px 0;
 }
 
-.featured-controls button {
+.language-controls button {
   padding: 12px 30px; /* Slightly smaller than .btn for distinction */
   font-size: 1.1rem;
   background: linear-gradient(45deg, #ff4040, #ff8080); /* Matches .search-form button */
@@ -326,13 +326,13 @@ header h1 {
   transition: all 0.4s ease; /* Matches .search-form button */
 }
 
-.featured-controls button:hover {
+.language-controls button:hover {
   background: linear-gradient(45deg, #ff1a1a, #ff6666);
   transform: scale(1.15); /* Matches .search-form button */
   box-shadow: 0 0 15px rgba(255, 64, 64, 0.8);
 }
 
-.featured-controls button.active {
+.language-controls button.active {
   background: linear-gradient(45deg, #ff1a1a, #ff6666); /* Active state */
   box-shadow: 0 0 20px rgba(255, 64, 64, 1);
 }
