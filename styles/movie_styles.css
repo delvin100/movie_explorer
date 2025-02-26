@@ -8,8 +8,8 @@
 /* Body Styling */
 body {
   font-family: 'Poppins', sans-serif;
-  background: var(--background); /* Changed from gradient to use variable */
-  color: #fff3b0; /* Light yellowish for body text */
+  background: var(--background); /* Ensures #1a1a1a */
+  color: #fff3b0;
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
