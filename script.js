@@ -36,6 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('homeButton').addEventListener('click', () => window.location.href = 'index.html');
     document.getElementById('watchlistBtn').addEventListener('click', showWatchlist);
+    document.getElementById('goToTopBtn').addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    document.getElementById('goToHomeBtn').addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
 });
 
 function setupLanguageSections() {
@@ -308,7 +314,7 @@ function openMorePopup(movieTitle, overviewText) {
             <h2>${movieTitle}</h2>
             <p>${overviewText}</p>
             <div id="trailerContainer" style="display: none;">
-                <iframe id="trailerFrame" width="100%" height="315" frameborder="0" allowfullscreen></iframe>
+                <iframe id="trailerFrame" width="100%" height="315" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
             <button id="messageButton">Message Me</button>
             <button id="trailerButton">Watch Trailer</button>

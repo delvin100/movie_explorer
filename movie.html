@@ -5,71 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/movie_styles.css">
     <title>Metflix - Movie Explorer</title>
-    <style>
-        :root { 
-            --background: #1a1a1a; 
-            --text: #e0e0e0; 
-            --card-bg: #000000; 
-        }
-        body { background: var(--background); color: var(--text); }
-        .movie { background: var(--card-bg); }
-        .spinner { 
-            display: none; 
-            width: 40px; 
-            height: 40px; 
-            border: 4px solid #ccc; 
-            border-top: 4px solid #28a745; 
-            border-radius: 50%; 
-            animation: spin 1s linear infinite; 
-            margin: 20px auto; 
-        }
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
-        }
-        .featured-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-            gap: 20px; 
-            padding: 20px; 
-        }
-        .language-section { margin: 40px 0; }
-        .language-controls { 
-            display: flex; 
-            gap: 15px; 
-            justify-content: center; 
-            margin: 20px 0; 
-        }
-        .language-controls button { 
-            padding: 10px 20px; 
-            background: linear-gradient(45deg, #ff4040, #ff8080); 
-            color: #fff; 
-            border: none; 
-            border-radius: 20px; 
-            cursor: pointer; 
-        }
-        .language-controls button.active { 
-            background: linear-gradient(45deg, #ff1a1a, #ff6666); 
-        }
-        .genre-controls { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 10px; 
-            justify-content: center; 
-            margin: 15px 0; 
-        }
-        .genre-controls button { 
-            padding: 8px 15px; 
-            background: #ff8080; 
-            color: #fff; 
-            border: none; 
-            border-radius: 15px; 
-            cursor: pointer; 
-        }
-        .genre-controls button.active { 
-            background: #ff4040; 
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -83,38 +18,70 @@
 
     <main class="home-main">
         <p>Discover the latest and most popular movies effortlessly. Start searching above!</p>
+        <div class="language-buttons">
+            <button class="language-button" onclick="scrollToSection('malayalamSection')">Malayalam</button>
+            <button class="language-button" onclick="scrollToSection('tamilSection')">Tamil</button>
+            <button class="language-button" onclick="scrollToSection('hindiSection')">Hindi</button>
+            <button class="language-button" onclick="scrollToSection('englishSection')">English</button>
+        </div>
+        <h2 class="trending-heading">Trending Movies</h2>
         <div id="spinner" class="spinner"></div>
         <div id="main"><p>Loading movies...</p></div>
 
         <!-- Language Sections -->
         <div class="language-section" id="malayalamSection">
-            <h2>Malayalam Movies</h2>
-            <div class="genre-controls" id="malayalamGenres"></div>
+            <h2 class="language-heading">Malayalam Movies</h2>
+            <div class="genre-container" id="malayalamGenres"></div>
             <div class="featured-grid" id="malayalamMovies"></div>
         </div>
         <div class="language-section" id="tamilSection">
-            <h2>Tamil Movies</h2>
-            <div class="genre-controls" id="tamilGenres"></div>
+            <h2 class="language-heading">Tamil Movies</h2>
+            <div class="genre-container" id="tamilGenres"></div>
             <div class="featured-grid" id="tamilMovies"></div>
         </div>
         <div class="language-section" id="hindiSection">
-            <h2>Hindi Movies</h2>
-            <div class="genre-controls" id="hindiGenres"></div>
+            <h2 class="language-heading">Hindi Movies</h2>
+            <div class="genre-container" id="hindiGenres"></div>
             <div class="featured-grid" id="hindiMovies"></div>
         </div>
         <div class="language-section" id="englishSection">
-            <h2>English Movies</h2>
-            <div class="genre-controls" id="englishGenres"></div>
+            <h2 class="language-heading">English Movies</h2>
+            <div class="genre-container" id="englishGenres"></div>
             <div class="featured-grid" id="englishMovies"></div>
         </div>
     </main>
 
-    <button id="helpButton" class="help-button">
-        <img src="https://drive.google.com/thumbnail?id=1QhCk0SxlZiW0eER2v9OkQvjoivr1iMxq&sz=w1000" alt="Help" class="help-icon"> Help
+    <div class="fixed-buttons">
+        <button id="helpButton" class="help-button">
+            <img src="images/help.png" alt="Help" class="help-icon"> Help
+        </button>
+        <button id="goToTopBtn" class="nav-button">
+            <img src="images/go_to_top.png" alt="Go to Top">
+        </button>
+    </div>
+    <button id="goToHomeBtn" class="logo-button">
+        <img src="images/go_to_home.png" alt="Go to Home">
     </button>
-    <button id="homeButton">Back to Home</button>
-    <button id="watchlistBtn">My Watchlist</button>
 
     <script src="script.js"></script>
+    <script>
+        // Function to smoothly scroll to a section
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Function to scroll to top
+        document.getElementById('goToTopBtn').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Function to navigate to homepage
+        document.getElementById('goToHomeBtn').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+    </script>
 </body>
 </html>

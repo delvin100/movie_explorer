@@ -15,6 +15,13 @@ body {
   overflow-x: hidden;
 }
 
+/* Root Variables */
+:root { 
+  --background: #1a1a1a; 
+  --text: #e0e0e0; 
+  --card-bg: #000000; 
+}
+
 /* Header Styling */
 header {
   background: linear-gradient(90deg, rgba(28, 7, 7, 0.95), rgba(139, 46, 46, 0.9));
@@ -90,6 +97,16 @@ header h1 {
   text-shadow: 0 0 10px rgba(255, 234, 128, 0.4);
 }
 
+/* Trending Movies Heading */
+.trending-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-transform: uppercase;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+  margin: 20px 0;
+}
+
 /* Movie Cards */
 #main {
   display: flex;
@@ -100,12 +117,12 @@ header h1 {
 }
 
 .movie {
-  background: #000000;
+  background: var(--card-bg);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
   width: 15rem;
-  height: 25rem;
+  height: 29rem; /* Increased height to accommodate title */
   cursor: pointer;
   transition: transform 0.6s ease;
   position: relative;
@@ -139,12 +156,12 @@ header h1 {
 
 .movie .card-front {
   z-index: 2;
-  background: #000000;
+  background: var(--card-bg);
 }
 
 .movie .card-back {
   transform: rotateY(180deg);
-  background: #000000;
+  background: var(--card-bg);
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -154,7 +171,7 @@ header h1 {
 
 .movie img {
   width: 100%;
-  height: 20rem;
+  height: 21rem; /* Reduced height to make room for title */
   object-fit: cover;
   border-bottom: 4px solid #ff4040;
 }
@@ -170,9 +187,10 @@ header h1 {
   color: #ffd700;
   text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
   word-wrap: break-word;
-  max-height: 4.2rem;
+  max-height: 6.2rem; /* Increased to accommodate longer titles */
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.4; /* Improved readability for multi-line text */
 }
 
 .card-back p {
@@ -299,10 +317,56 @@ header h1 {
   box-shadow: 0 0 20px rgba(255, 64, 64, 0.7);
 }
 
+/* Navigation and Logo Buttons */
+.fixed-buttons {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Spacing between Go to Top and Help */
+  z-index: 100;
+  align-items: flex-end; /* Align to the right for Go to Top and Help */
+}
+
+.nav-button, .logo-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  padding: 0; /* Remove padding to fit image naturally */
+}
+
+.nav-button img, .logo-button img {
+  width: 60px; /* Default size for images, adjustable for responsiveness */
+  height: 60px;
+  border-radius: 50%; /* Ensure circular shape for both images */
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nav-button:hover img, .logo-button:hover img {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.nav-button:active img, .logo-button:active img {
+  transform: scale(0.95);
+}
+
+/* Logo Button (Metflix) - Positioned in left bottom corner */
+.logo-button {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 100;
+}
+
+/* Help Button - Positioned above Go to Top on the right */
 .help-button {
   position: fixed;
-  bottom: 1.25rem;
-  right: 1.25rem;
+  bottom: 105px; /* Position above Go to Top (95px + 15px gap) */
+  right: 8px;
   background-color: #28a745;
   color: white;
   border: none;
@@ -315,6 +379,7 @@ header h1 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, background-color 0.3s ease;
   animation: pulse 1.5s infinite;
+  z-index: 100;
 }
 
 .help-button:hover {
@@ -329,8 +394,8 @@ header h1 {
 }
 
 .help-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.2rem;
+  height: 1.2em;
   margin-right: 0.5rem;
 }
 
@@ -339,34 +404,124 @@ header h1 {
   margin: 2.5rem 0;
 }
 
-.language-controls {
+.language-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-transform: uppercase;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+  margin-bottom: 20px;
+}
+
+/* Genre Container and Buttons */
+.genre-container {
   display: flex;
   justify-content: center;
-  gap: 1.25rem;
-  margin: 1.25rem 0;
+  flex-wrap: wrap;
+  gap: 15px; /* Increased gap for better spacing */
+  margin: 20px 0;
+  padding: 20px;
+  background: #000000; /* Black background to match the image */
+  border-radius: 25px;
+  box-shadow: 0 8px 20px rgba(255, 64, 64, 0.5);
+  transition: all 0.3s ease;
+  border-bottom: 4px solid #ff4040; /* Red border at bottom to match the image */
 }
 
-.language-controls button {
-  padding: 0.75rem 1.875rem;
-  font-size: 1.1rem;
-  background: linear-gradient(45deg, #ff4040, #ff8080);
-  color: #ffe066;
-  font-weight: 600;
+.genre-container:hover {
+  box-shadow: 0 10px 25px rgba(255, 64, 64, 0.7);
+}
+
+.genre-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.genre-controls button {
+  padding: 16px 28px; /* Increased size for larger buttons */
+  font-size: 1.3rem; /* Larger font for readability */
+  background: #000000; /* Black background to match the image */
+  color: #ffffff; /* White text to match the image */
   border: none;
-  border-radius: 50px;
+  border-radius: 25px; /* Slightly rounded for a modern look */
   cursor: pointer;
   transition: all 0.4s ease;
+  box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4); /* Greenish shadow to match theme */
+  text-transform: uppercase;
+  letter-spacing: 1.5px; /* Enhanced letter spacing for style */
+  font-weight: 700; /* Bolder text for emphasis */
+  border-bottom: 4px solid #ff4040; /* Red border at bottom to match the image */
 }
 
-.language-controls button:hover {
-  background: linear-gradient(45deg, #ff1a1a, #ff6666);
+.genre-controls button.active {
+  background: #1a1a1a; /* Slightly darker black for active state */
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.6);
+  transform: scale(1.1);
+}
+
+.genre-controls button:hover {
   transform: scale(1.15);
-  box-shadow: 0 0 15px rgba(255, 64, 64, 0.8);
+  background: #1a1a1a; /* Slightly darker black on hover */
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6);
 }
 
-.language-controls button.active {
-  background: linear-gradient(45deg, #ff1a1a, #ff6666);
-  box-shadow: 0 0 20px rgba(255, 64, 64, 1);
+.genre-controls button:active {
+  transform: scale(0.98);
+}
+
+/* Language Buttons */
+.language-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.language-button {
+  padding: 12px 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, #28a745, #34c759);
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.5);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.language-button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(0);
+  transition: transform 0.4s ease;
+  border-radius: 30px;
+}
+
+.language-button:hover {
+  transform: scale(1.1);
+  background: linear-gradient(45deg, #218838, #2ecc71);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.7);
+}
+
+.language-button:hover:before {
+  transform: scale(1);
+}
+
+.language-button:active {
+  transform: scale(0.95);
 }
 
 /* Featured Grid */
@@ -404,17 +559,25 @@ header h1 {
   .home-main { padding: 1.25rem; }
   .home-main p { font-size: 1.2rem; }
   #main, .featured-grid { gap: 1rem; padding: 1.25rem; }
-  .movie { width: 100%; max-width: 13.75rem; height: 20rem; }
-  .movie img { height: 15rem; }
+  .movie { width: 100%; max-width: 13.75rem; height: 25rem; } /* Adjusted height for title */
+  .movie img { height: 16rem; } /* Reduced image height for title space */
   .language-section { margin: 1.5rem 0; }
-  .language-controls, .genre-controls { gap: 0.625rem; }
-  .language-controls button, .genre-controls button { padding: 0.625rem 1rem; font-size: 0.9rem; }
+  .language-heading, .trending-heading { font-size: 1.5rem; }
+  .language-controls, .genre-container { gap: 0.625rem; }
+  .language-controls button, .genre-controls button { padding: 0.625rem 1rem; font-size: 0.9rem; border-radius: 15px; }
   .popup-content { padding: 1.25rem; max-width: 90%; }
   .popup h2 { font-size: 1.5rem; }
   .popup p { font-size: 0.9rem; }
   .popup button { padding: 0.625rem 1.25rem; font-size: 0.9rem; }
   #homeButton, #watchlistBtn { padding: 0.75rem 1.25rem; font-size: 0.9rem; }
-  .help-button { padding: 0.625rem 1rem; font-size: 0.875rem; }
+  .help-button { padding: 0.625rem 1rem; font-size: 0.875rem; bottom: 110px; right: 15px; }
+  .fixed-buttons { bottom: 20px; right: 15px; gap: 12px; }
+  .nav-button img, .logo-button img { width: 50px; height: 50px; } /* Smaller size on tablets */
+  .logo-button { left: 15px; }
+  .language-buttons { gap: 15px; margin: 20px 0; }
+  .language-button { padding: 10px 20px; font-size: 1rem; border-radius: 25px; }
+  .genre-container { padding: 8px; margin: 10px 0; border-radius: 15px; }
+  .movie-info h3 { font-size: 1.2rem; max-height: 5.2rem; } /* Adjusted for smaller screens */
 }
 
 @media screen and (max-width: 480px) {
@@ -424,14 +587,20 @@ header h1 {
   .search-form button { padding: 0.625rem 1rem; font-size: 0.8rem; }
   .home-main p { font-size: 1rem; }
   #main, .featured-grid { grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr)); padding: 0.625rem; }
-  .movie { max-width: 11.25rem; height: 18rem; }
-  .movie img { height: 12.5rem; }
-  .movie-info h3 { font-size: 1.2rem; }
-  .language-controls button, .genre-controls button { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+  .movie { max-width: 11.25rem; height: 23rem; } /* Adjusted height for title */
+  .movie img { height: 14rem; } /* Reduced image height for title space */
+  .movie-info h3 { font-size: 1rem; max-height: 4.4rem; } /* Adjusted for smaller screens */
+  .language-controls button, .genre-controls button { padding: 0.5rem 0.75rem; font-size: 0.8rem; border-radius: 10px; }
   .popup-content { padding: 0.9375rem; }
   .popup h2 { font-size: 1.2rem; }
   .popup p { font-size: 0.8rem; }
   .popup button { padding: 0.5rem 1rem; font-size: 0.8rem; }
-  .help-button { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
-  .help-icon { width: 1rem; height: 1rem; }
+  .help-button { padding: 0.5rem 0.75rem; font-size: 0.75rem; bottom: 110px; right: 10px; }
+  .fixed-buttons { bottom: 20px; right: 10px; gap: 10px; }
+  .nav-button img, .logo-button img { width: 40px; height: 40px; } /* Smaller size on mobile */
+  .logo-button { left: 10px; }
+  .language-buttons { gap: 10px; margin: 15px 0; }
+  .language-button { padding: 8px 15px; font-size: 0.9rem; border-radius: 20px; }
+  .language-heading, .trending-heading { font-size: 1.2rem; }
+  .genre-container { padding: 5px; margin: 5px 0; border-radius: 10px; }
 }

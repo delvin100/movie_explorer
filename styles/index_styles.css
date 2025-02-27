@@ -238,7 +238,7 @@ body {
     margin-bottom: 15px;
 }
 
-/* Tech Stack */
+/* Tech Stack (Updated to remove red semi-transparent background) */
 .tech-stack {
     display: flex;
     justify-content: center;
@@ -246,11 +246,10 @@ body {
     flex-wrap: wrap;
     margin: 20px 0;
     padding: 10px;
-    background-color: rgba(255, 0, 0, 0.1);
-    border-radius: 10px;
+    /* Removed background-color: rgba(255, 0, 0, 0.1); */
 }
 
-/* Tech Item */
+/* Tech Item (Circular styling remains unchanged) */
 .tech-item {
     background-color: #ff0000;
     color: #fff;
