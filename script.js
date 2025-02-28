@@ -22,8 +22,9 @@ const LANGUAGE_APIS = {
     english: `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}&include_adult=false&with_original_language=en&vote_count.gte=20`
 };
 
+// Removed Sci-Fi (878) from GENRES
 const GENRES = {
-    action: 28, comedy: 35, drama: 18, horror: 27, romance: 10749, thriller: 53, scifi: 878
+    action: 28, comedy: 35, drama: 18, horror: 27, romance: 10749, thriller: 53
 };
 
 let lastFlippedCard = null;
@@ -33,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const mainUrl = genre ? `${LANGUAGE_APIS.malayalam}&with_genres=${genre}` : LANGUAGE_APIS.malayalam;
     getMovies(mainUrl);
     setupLanguageSections();
+    setupGenreButtons(); // Main genre buttons before language sections
 
     document.getElementById('homeButton').addEventListener('click', () => window.location.href = 'index.html');
     document.getElementById('watchlistBtn').addEventListener('click', showWatchlist);
@@ -49,7 +51,7 @@ function setupLanguageSections() {
         const genreContainer = document.getElementById(`${lang}Genres`);
         const movieContainer = document.getElementById(`${lang}Movies`);
         if (genreContainer && movieContainer) {
-            setupGenreButtons(lang, genreContainer, movieContainer);
+            setupGenreButtonsForLanguage(lang, genreContainer, movieContainer);
             getMoviesByLanguage(LANGUAGE_APIS[lang], movieContainer, lang, 60);
         } else {
             console.error(`Missing elements for ${lang} section`);
@@ -57,16 +59,33 @@ function setupLanguageSections() {
     });
 }
 
-function setupGenreButtons(lang, container, movieContainer) {
+function setupGenreButtonsForLanguage(lang, container, movieContainer) {
     Object.entries(GENRES).forEach(([name, id]) => {
         const btn = document.createElement('button');
         btn.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+        btn.classList.add('genre-button');
         btn.addEventListener('click', () => {
             toggleActiveGenreButton(btn, container);
             getMoviesByLanguage(`${LANGUAGE_APIS[lang]}&with_genres=${id}`, movieContainer, lang, 60);
         });
         container.appendChild(btn);
     });
+}
+
+function setupGenreButtons() {
+    const genreContainer = document.getElementById('genreButtons');
+    if (genreContainer) {
+        Object.entries(GENRES).forEach(([name, id]) => {
+            const btn = document.createElement('button');
+            btn.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+            btn.classList.add('genre-button');
+            btn.addEventListener('click', () => {
+                toggleActiveGenreButton(btn, genreContainer);
+                getMoviesByGenre(id);
+            });
+            genreContainer.appendChild(btn);
+        });
+    }
 }
 
 function toggleActiveGenreButton(activeBtn, container) {
@@ -115,6 +134,32 @@ async function getMoviesByLanguage(url, container, lang, limit = 60) {
         console.error(`Error fetching ${lang} movies:`, error);
         container.innerHTML = '<p>Error loading movies.</p>';
         showPopup(`❌ Error fetching ${lang} movies.`);
+    }
+}
+
+async function getMoviesByGenre(genreId) {
+    const url = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}&include_adult=false&with_genres=${genreId}&vote_count.gte=20`;
+    if (!main) {
+        console.error('Main element not found');
+        return;
+    }
+    spinner.style.display = 'block';
+    try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to fetch movies: ${res.status}`);
+        const data = await res.json();
+        const safeMovies = filterSafeMovies(data.results || []);
+        if (safeMovies.length === 0) {
+            main.innerHTML = '<p>No movies found.</p>';
+        } else {
+            showMovies(safeMovies);
+        }
+    } catch (error) {
+        console.error('Error fetching movies:', error);
+        main.innerHTML = '<p>Error loading movies. Please try again later.</p>';
+        showPopup('❌ Error fetching movie data.');
+    } finally {
+        spinner.style.display = 'none';
     }
 }
 

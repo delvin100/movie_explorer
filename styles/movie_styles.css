@@ -122,7 +122,7 @@ header h1 {
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
   width: 15rem;
-  height: 29rem; /* Increased height to accommodate title */
+  height: 32rem; /* Increased height to accommodate the button positioning further down */
   cursor: pointer;
   transition: transform 0.6s ease;
   position: relative;
@@ -165,13 +165,13 @@ header h1 {
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-between; /* Maintains spacing between elements */
   color: #fff3b0;
 }
 
 .movie img {
   width: 100%;
-  height: 21rem; /* Reduced height to make room for title */
+  height: 21rem; /* Reduced height to make room for title and buttons */
   object-fit: cover;
   border-bottom: 4px solid #ff4040;
 }
@@ -197,8 +197,32 @@ header h1 {
   font-size: 0.9rem;
   margin: 0.5rem 0;
   color: #ffea80;
-  overflow-y: auto;
-  max-height: 8rem; /* Adjusted for button space */
+  overflow-y: auto; /* Keeps scrolling enabled */
+  max-height: 12rem; /* Maintained as is for more text space */
+  /* Custom Scrollbar Styling */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #ff4040 #333; /* Thumb color and track color for Firefox */
+}
+
+/* Webkit Scrollbar Styling (for Chrome, Safari, Edge) */
+.card-back p::-webkit-scrollbar {
+  width: 8px; /* Adjust the width (size) of the scrollbar */
+}
+
+.card-back p::-webkit-scrollbar-track {
+  background: #333; /* Track color (background of scrollbar) */
+  border-radius: 10px; /* Rounded corners for the track */
+}
+
+.card-back p::-webkit-scrollbar-thumb {
+  background: #ff4040; /* Thumb color (scrollbar handle) */
+  border-radius: 10px; /* Rounded corners for the thumb */
+  border: 2px solid #333; /* Optional: adds a border for better contrast */
+}
+
+.card-back p::-webkit-scrollbar-thumb:hover {
+  background: #ff8080; /* Change thumb color on hover for interactivity */
+  box-shadow: 0 0 5px rgba(255, 64, 64, 0.5); /* Optional: adds a subtle glow on hover */
 }
 
 .card-back button {
@@ -212,6 +236,27 @@ header h1 {
   cursor: pointer;
   margin: 0.25rem 0;
   transition: all 0.3s ease;
+}
+
+/* Reposition "Add to Watchlist" and "More" buttons further down, just above "More" with minimal spacing */
+.card-back .buttons {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  gap: 0.2rem; /* Minimal gap between "Add to Watchlist" and "More" for a tight fit */
+  margin-top: 2rem; /* Increased margin to push buttons down even further, just above "More" */
+}
+
+.card-back .add-to-watchlist-btn {
+  order: 1; /* Places "Add to Watchlist" above "More" */
+}
+
+.card-back .more-btn {
+  order: 2; /* Places "More" below "Add to Watchlist" */
+}
+
+/* Ensure the buttons fit within the card-back height */
+.card-back {
+  padding-bottom: 1.5rem; /* Add extra padding at the bottom to accommodate buttons */
 }
 
 .card-back button:hover {
@@ -410,72 +455,71 @@ header h1 {
   color: #ffd700;
   text-transform: uppercase;
   text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
-  margin-bottom: 20px;
+  margin-bottom: 10px; /* Reduced margin to make room for buttons */
 }
 
-/* Genre Container and Buttons */
-.genre-container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 15px; /* Increased gap for better spacing */
-  margin: 20px 0;
-  padding: 20px;
-  background: #000000; /* Black background to match the image */
-  border-radius: 25px;
-  box-shadow: 0 8px 20px rgba(255, 64, 64, 0.5);
-  transition: all 0.3s ease;
-  border-bottom: 4px solid #ff4040; /* Red border at bottom to match the image */
-}
-
-.genre-container:hover {
-  box-shadow: 0 10px 25px rgba(255, 64, 64, 0.7);
-}
-
-.genre-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
-}
-
-.genre-controls button {
-  padding: 16px 28px; /* Increased size for larger buttons */
-  font-size: 1.3rem; /* Larger font for readability */
-  background: #000000; /* Black background to match the image */
-  color: #ffffff; /* White text to match the image */
+/* Genre Buttons (Removed container styling, keeping only buttons with space) */
+.genre-button {
+  padding: 8px 16px; /* Maintained smaller size */
+  font-size: 0.9rem; /* Maintained smaller font size */
+  background: #28a745; /* Green background to match help button */
+  color: #ffffff; /* White text to match help button */
   border: none;
-  border-radius: 25px; /* Slightly rounded for a modern look */
+  border-radius: 15px; /* Maintained for smaller size */
   cursor: pointer;
   transition: all 0.4s ease;
-  box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4); /* Greenish shadow to match theme */
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); /* Green shadow to match theme */
   text-transform: uppercase;
-  letter-spacing: 1.5px; /* Enhanced letter spacing for style */
-  font-weight: 700; /* Bolder text for emphasis */
-  border-bottom: 4px solid #ff4040; /* Red border at bottom to match the image */
+  letter-spacing: 1px; /* Maintained for smaller size */
+  font-weight: 600; /* Maintained for readability */
+  position: relative;
+  overflow: hidden; /* For hover effect */
+  margin-right: 10px; /* Added space between buttons */
 }
 
-.genre-controls button.active {
-  background: #1a1a1a; /* Slightly darker black for active state */
-  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.6);
-  transform: scale(1.1);
+/* Active state */
+.genre-button.active {
+  background: #218838; /* Darker green for active state, matching help button hover */
+  box-shadow: 0 6px 15px rgba(40, 167, 69, 0.7);
+  transform: scale(1.05) translateY(-2px); /* Slight pop-up effect */
 }
 
-.genre-controls button:hover {
-  transform: scale(1.15);
-  background: #1a1a1a; /* Slightly darker black on hover */
-  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6);
+/* Hover effect with glowing animation */
+.genre-button:hover {
+  transform: scale(1.1) translateY(-3px);
+  background: #218838; /* Darker green on hover, matching help button */
+  box-shadow: 0 6px 18px rgba(40, 167, 69, 0.8); /* Enhanced green shadow */
 }
 
-.genre-controls button:active {
+/* Removed pseudo-element shine effect to simplify, but can be re-added if desired */
+/*
+.genre-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: all 0.6s ease;
+}
+
+.genre-button:hover::before {
+  left: 100%;
+}
+*/
+
+/* Click effect */
+.genre-button:active {
   transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
 }
 
-/* Language Buttons */
+/* Language Buttons (Enhanced for attractiveness) */
 .language-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 15px; /* Reduced gap for tighter fit, but can adjust */
   margin: 30px 0;
   flex-wrap: wrap;
 }
@@ -483,45 +527,59 @@ header h1 {
 .language-button {
   padding: 12px 25px;
   font-size: 1.1rem;
-  font-weight: 600;
-  background: linear-gradient(45deg, #28a745, #34c759);
-  color: #fff;
+  font-weight: 700; /* Bolder text for emphasis */
+  background: linear-gradient(45deg, #28a745, #34c759); /* Maintained green gradient */
+  color: #ffffff; /* White text */
   border: none;
   border-radius: 30px;
   cursor: pointer;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.5);
+  letter-spacing: 1.5px; /* Enhanced letter spacing for style */
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.5), 0 0 10px rgba(40, 167, 69, 0.3); /* Enhanced shadow with glow */
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
 }
 
-.language-button:before {
+/* Added cinematic glow effect */
+.language-button::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.1);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, transparent 70%);
   transform: scale(0);
   transition: transform 0.4s ease;
   border-radius: 30px;
+  pointer-events: none;
 }
 
 .language-button:hover {
   transform: scale(1.1);
-  background: linear-gradient(45deg, #218838, #2ecc71);
-  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.7);
+  background: linear-gradient(45deg, #218838, #2ecc71); /* Darker green gradient on hover */
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.7), 0 0 15px rgba(40, 167, 69, 0.5); /* Stronger shadow and glow */
 }
 
-.language-button:hover:before {
+.language-button:hover::before {
   transform: scale(1);
 }
 
 .language-button:active {
   transform: scale(0.95);
+  box-shadow: 0 3px 10px rgba(40, 167, 69, 0.4);
+}
+
+/* Added pulse animation for extra attractiveness */
+.language-button {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 /* Featured Grid */
@@ -559,12 +617,11 @@ header h1 {
   .home-main { padding: 1.25rem; }
   .home-main p { font-size: 1.2rem; }
   #main, .featured-grid { gap: 1rem; padding: 1.25rem; }
-  .movie { width: 100%; max-width: 13.75rem; height: 25rem; } /* Adjusted height for title */
+  .movie { width: 100%; max-width: 13.75rem; height: 28rem; } /* Adjusted height for title and larger text space */
   .movie img { height: 16rem; } /* Reduced image height for title space */
   .language-section { margin: 1.5rem 0; }
   .language-heading, .trending-heading { font-size: 1.5rem; }
-  .language-controls, .genre-container { gap: 0.625rem; }
-  .language-controls button, .genre-controls button { padding: 0.625rem 1rem; font-size: 0.9rem; border-radius: 15px; }
+  .genre-button { padding: 6px 12px; font-size: 0.8rem; border-radius: 12px; margin-right: 8px; } /* Reduced space on tablets */
   .popup-content { padding: 1.25rem; max-width: 90%; }
   .popup h2 { font-size: 1.5rem; }
   .popup p { font-size: 0.9rem; }
@@ -574,10 +631,11 @@ header h1 {
   .fixed-buttons { bottom: 20px; right: 15px; gap: 12px; }
   .nav-button img, .logo-button img { width: 50px; height: 50px; } /* Smaller size on tablets */
   .logo-button { left: 15px; }
-  .language-buttons { gap: 15px; margin: 20px 0; }
+  .language-buttons { gap: 12px; margin: 20px 0; } /* Reduced gap on tablets */
   .language-button { padding: 10px 20px; font-size: 1rem; border-radius: 25px; }
-  .genre-container { padding: 8px; margin: 10px 0; border-radius: 15px; }
-  .movie-info h3 { font-size: 1.2rem; max-height: 5.2rem; } /* Adjusted for smaller screens */
+  .card-back p { font-size: 0.8rem; max-height: 10rem; } /* Adjusted for smaller screens */
+  .card-back .buttons { margin-top: 1.75rem; gap: 0.15rem; } /* Adjusted button positioning for tablets, minimal gap */
+  .card-back button { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
 }
 
 @media screen and (max-width: 480px) {
@@ -587,10 +645,10 @@ header h1 {
   .search-form button { padding: 0.625rem 1rem; font-size: 0.8rem; }
   .home-main p { font-size: 1rem; }
   #main, .featured-grid { grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr)); padding: 0.625rem; }
-  .movie { max-width: 11.25rem; height: 23rem; } /* Adjusted height for title */
+  .movie { max-width: 11.25rem; height: 26rem; } /* Adjusted height for title and larger text space */
   .movie img { height: 14rem; } /* Reduced image height for title space */
   .movie-info h3 { font-size: 1rem; max-height: 4.4rem; } /* Adjusted for smaller screens */
-  .language-controls button, .genre-controls button { padding: 0.5rem 0.75rem; font-size: 0.8rem; border-radius: 10px; }
+  .genre-button { padding: 4px 10px; font-size: 0.7rem; border-radius: 10px; margin-right: 6px; } /* Reduced space on mobile */
   .popup-content { padding: 0.9375rem; }
   .popup h2 { font-size: 1.2rem; }
   .popup p { font-size: 0.8rem; }
@@ -599,8 +657,10 @@ header h1 {
   .fixed-buttons { bottom: 20px; right: 10px; gap: 10px; }
   .nav-button img, .logo-button img { width: 40px; height: 40px; } /* Smaller size on mobile */
   .logo-button { left: 10px; }
-  .language-buttons { gap: 10px; margin: 15px 0; }
+  .language-buttons { gap: 8px; margin: 15px 0; } /* Reduced gap on mobile */
   .language-button { padding: 8px 15px; font-size: 0.9rem; border-radius: 20px; }
   .language-heading, .trending-heading { font-size: 1.2rem; }
-  .genre-container { padding: 5px; margin: 5px 0; border-radius: 10px; }
+  .card-back p { font-size: 0.7rem; max-height: 9rem; } /* Adjusted for smaller screens */
+  .card-back .buttons { margin-top: 1.5rem; gap: 0.1rem; } /* Adjusted button positioning for mobile, minimal gap */
+  .card-back button { padding: 0.3rem 0.6rem; font-size: 0.7rem; }
 }
