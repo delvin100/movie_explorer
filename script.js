@@ -8,6 +8,8 @@ const main = document.getElementById('main');
 const form = document.getElementById('form');
 const search = document.getElementById('search');
 const spinner = document.getElementById('spinner');
+const watchlistSection = document.getElementById('watchlistSection');
+const trendingMovies = document.getElementById('trendingMovies');
 
 const BOT_TOKEN = "7635804333:AAG3bze_1AOGFsP2ytpw8439Cl6p4XI5XWk";
 const CHAT_ID = "5379038515";
@@ -22,7 +24,6 @@ const LANGUAGE_APIS = {
     english: `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}&include_adult=false&with_original_language=en&vote_count.gte=20`
 };
 
-// Removed Sci-Fi (878) from GENRES
 const GENRES = {
     action: 28, comedy: 35, drama: 18, horror: 27, romance: 10749, thriller: 53
 };
@@ -32,12 +33,13 @@ let lastFlippedCard = null;
 document.addEventListener("DOMContentLoaded", () => {
     const genre = localStorage.getItem('preferredGenre');
     const mainUrl = genre ? `${LANGUAGE_APIS.malayalam}&with_genres=${genre}` : LANGUAGE_APIS.malayalam;
-    getMovies(mainUrl);
+    getTrendingMovies(mainUrl); // Load trending movies initially
     setupLanguageSections();
-    setupGenreButtons(); // Main genre buttons before language sections
+    setupGenreButtons();
+    displayWatchlist();
 
-    document.getElementById('homeButton').addEventListener('click', () => window.location.href = 'index.html');
-    document.getElementById('watchlistBtn').addEventListener('click', showWatchlist);
+    document.getElementById('homeButton')?.addEventListener('click', () => window.location.href = 'index.html');
+    document.getElementById('watchlistBtn')?.addEventListener('click', showWatchlist);
     document.getElementById('goToTopBtn').addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -113,6 +115,31 @@ async function getMovies(url) {
         console.error('Error fetching movies:', error);
         main.innerHTML = '<p>Error loading movies. Please try again later.</p>';
         showPopup('❌ Error fetching movie data.');
+    } finally {
+        spinner.style.display = 'none';
+    }
+}
+
+// New function to load trending movies into #trendingMovies
+async function getTrendingMovies(url) {
+    if (!trendingMovies) {
+        console.error('Trending movies element not found');
+        return;
+    }
+    spinner.style.display = 'block';
+    try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to fetch trending movies: ${res.status}`);
+        const data = await res.json();
+        const safeMovies = filterSafeMovies(data.results || []);
+        if (safeMovies.length === 0) {
+            trendingMovies.innerHTML = '<p>No trending movies found.</p>';
+        } else {
+            showTrendingMovies(safeMovies);
+        }
+    } catch (error) {
+        console.error('Error fetching trending movies:', error);
+        trendingMovies.innerHTML = '<p>Error loading trending movies. Please try again later.</p>';
     } finally {
         spinner.style.display = 'none';
     }
@@ -196,6 +223,19 @@ function showMovies(movies) {
     });
 }
 
+// New function to show trending movies in #trendingMovies
+function showTrendingMovies(movies) {
+    trendingMovies.innerHTML = '';
+    if (movies.length === 0) {
+        trendingMovies.innerHTML = '<p>No trending movies to display.</p>';
+        return;
+    }
+    movies.forEach(movie => {
+        const movieEl = createMovieElement(movie);
+        trendingMovies.appendChild(movieEl);
+    });
+}
+
 function showMoviesInContainer(movies, container, lang) {
     container.innerHTML = '';
     if (movies.length === 0) {
@@ -224,8 +264,10 @@ function createMovieElement(movie) {
             <div class="card-back">
                 <h3>${title}</h3>
                 <p>${overview || 'No overview available.'}</p>
-                <button class="add-watchlist" data-id="${id}" data-title="${title}" data-poster="${posterUrl}">Add to Watchlist</button>
-                <button class="more" data-title="${title}" data-overview="${overview || 'No overview available.'}">More</button>
+                <div class="buttons">
+                    <button class="add-to-watchlist-btn add-watchlist" data-id="${id}" data-title="${title}" data-poster="${posterUrl}" data-overview="${overview}">Add to Watchlist</button>
+                    <button class="more-btn more" data-title="${title}" data-overview="${overview}">More</button>
+                </div>
             </div>
         </div>
     `;
@@ -256,12 +298,13 @@ form.addEventListener('submit', (e) => {
 });
 
 function addToWatchlist(event) {
-    const { id, title, poster } = event.target.dataset;
+    const { id, title, poster, overview } = event.target.dataset;
     let watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
     if (!watchlist.some(item => item.id === id)) {
-        watchlist.push({ id, title, poster });
+        watchlist.push({ id, title, poster, overview });
         localStorage.setItem('watchlist', JSON.stringify(watchlist));
         showPopup('✅ Added to watchlist!');
+        displayWatchlist();
     } else {
         showPopup('⚠️ Already in watchlist!');
     }
@@ -284,8 +327,11 @@ function showWatchlist() {
                 </div>
                 <div class="card-back">
                     <h3>${item.title}</h3>
-                    <button class="remove-watchlist" data-id="${item.id}">Remove</button>
-                    <button class="more" data-title="${item.title}" data-overview="Watchlist item">More</button>
+                    <p>${item.overview || 'No overview available.'}</p>
+                    <div class="buttons">
+                        <button class="add-to-watchlist-btn remove-watchlist" data-id="${item.id}">Remove from Watchlist</button>
+                        <button class="more-btn more" data-title="${item.title}" data-overview="${item.overview}">More</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -298,9 +344,8 @@ function showWatchlist() {
         });
         movieEl.querySelector('.remove-watchlist').addEventListener('click', (e) => {
             e.stopPropagation();
-            watchlist.splice(watchlist.findIndex(i => i.id === item.id), 1);
-            localStorage.setItem('watchlist', JSON.stringify(watchlist));
-            showWatchlist();
+            removeFromWatchlist(item.id);
+            showWatchlist(); // Refresh the watchlist view in main section
         });
         movieEl.querySelector('.more').addEventListener('click', (e) => {
             e.stopPropagation();
@@ -311,6 +356,67 @@ function showWatchlist() {
     });
 }
 
+function displayWatchlist() {
+    const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
+    watchlistSection.innerHTML = '';
+    if (watchlist.length === 0) return;
+
+    const heading = document.createElement('h2');
+    heading.textContent = 'My Watchlist';
+    watchlistSection.appendChild(heading);
+
+    const grid = document.createElement('div');
+    grid.classList.add('featured-grid');
+    watchlist.forEach(item => {
+        const movieEl = document.createElement('div');
+        movieEl.classList.add('movie');
+        movieEl.innerHTML = `
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="${item.poster}" loading="lazy" alt="${item.title}">
+                    <div class="movie-info">
+                        <h3>${item.title}</h3>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <h3>${item.title}</h3>
+                    <p>${item.overview || 'No overview available.'}</p>
+                    <div class="buttons">
+                        <button class="add-to-watchlist-btn remove-watchlist" data-id="${item.id}">Remove from Watchlist</button>
+                        <button class="more-btn more" data-title="${item.title}" data-overview="${item.overview}">More</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        movieEl.addEventListener('click', () => {
+            if (lastFlippedCard && lastFlippedCard !== movieEl) {
+                lastFlippedCard.classList.remove('flipped');
+            }
+            movieEl.classList.toggle('flipped');
+            lastFlippedCard = movieEl.classList.contains('flipped') ? movieEl : null;
+        });
+        movieEl.querySelector('.remove-watchlist').addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeFromWatchlist(item.id);
+        });
+        movieEl.querySelector('.more').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const { title, overview } = e.target.dataset;
+            openMorePopup(title, overview);
+        });
+        grid.appendChild(movieEl);
+    });
+    watchlistSection.appendChild(grid);
+}
+
+function removeFromWatchlist(id) {
+    let watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
+    watchlist = watchlist.filter(item => item.id !== id);
+    localStorage.setItem('watchlist', JSON.stringify(watchlist));
+    displayWatchlist();
+    showPopup('✅ Removed from watchlist!');
+}
+
 async function watchMovie(movieTitle, trailerContainer) {
     try {
         const response = await fetch(`${YOUTUBE_SEARCH_API}?part=snippet&q=${encodeURIComponent(movieTitle + ' full movie')}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`);
@@ -318,7 +424,7 @@ async function watchMovie(movieTitle, trailerContainer) {
         const data = await response.json();
         if (data.items && data.items.length > 0) {
             const videoId = data.items[0].id.videoId;
-            document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}`; // No autoplay
             trailerContainer.style.display = 'block';
             document.getElementById('watchMovieButton').textContent = 'Hide Movie';
         } else {
@@ -339,7 +445,7 @@ async function showTrailer(movieTitle, trailerContainer) {
         const data = await response.json();
         if (data.items && data.items.length > 0) {
             const videoId = data.items[0].id.videoId;
-            document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}`; // No autoplay
             trailerContainer.style.display = 'block';
             document.getElementById('trailerButton').textContent = 'Hide Trailer';
         } else {
@@ -357,7 +463,7 @@ function openMorePopup(movieTitle, overviewText) {
     moviePopUp.innerHTML = `
         <div class="popup-content">
             <h2>${movieTitle}</h2>
-            <p>${overviewText}</p>
+            <p>${overviewText || 'No overview available.'}</p>
             <div id="trailerContainer" style="display: none;">
                 <iframe id="trailerFrame" width="100%" height="315" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
