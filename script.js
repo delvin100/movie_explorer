@@ -1,8 +1,11 @@
 const API_KEY = '3fd2be6f0c70a2a598f084ddfb75487c';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
 const SEARCH_API = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&include_adult=false&query=`;
-const YOUTUBE_API_KEY = 'AIzaSyCZUKv7qHiCzme5v2uXHMPV1-A_LrawVpY';
+const YOUTUBE_API_KEY = 'AIzaSyABfEbxuYNeBPGsGgc-S9NDZfYH_1xhNM4';
 const YOUTUBE_SEARCH_API = 'https://www.googleapis.com/youtube/v3/search';
+
+const TELEGRAM_BOT_TOKEN = '7635804333:AAG3bze_1AOGFsP2ytpw8439Cl6p4XI5XWk'; 
+const TELEGRAM_CHAT_ID = '5379038515'; 
 
 const main = document.getElementById('main');
 const form = document.getElementById('form');
@@ -10,12 +13,6 @@ const search = document.getElementById('search');
 const spinner = document.getElementById('spinner');
 const watchlistSection = document.getElementById('watchlistSection');
 const trendingMovies = document.getElementById('trendingMovies');
-
-const BOT_TOKEN = "7635804333:AAG3bze_1AOGFsP2ytpw8439Cl6p4XI5XWk";
-const CHAT_ID = "5379038515";
-const TELEGRAM_API_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-
-const BLOCKED_KEYWORDS = ['adult', 'xxx', 'porn', 'erotic', 'sex', '18+', 'hot', 'nude'];
 
 const LANGUAGE_APIS = {
     malayalam: `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}&include_adult=false&with_original_language=ml&vote_count.gte=20`,
@@ -28,24 +25,40 @@ const GENRES = {
     action: 28, comedy: 35, drama: 18, horror: 27, romance: 10749, thriller: 53
 };
 
+const BLOCKED_KEYWORDS = ['adult', 'xxx', 'porn', 'erotic', 'sex', '18+', 'hot', 'nude'];
+
 let lastFlippedCard = null;
+let debounceTimer;
 
 document.addEventListener("DOMContentLoaded", () => {
-    const genre = localStorage.getItem('preferredGenre');
-    const mainUrl = genre ? `${LANGUAGE_APIS.malayalam}&with_genres=${genre}` : LANGUAGE_APIS.malayalam;
-    getTrendingMovies(mainUrl); // Load trending movies initially
+    getTrendingMovies();
     setupLanguageSections();
     setupGenreButtons();
     displayWatchlist();
 
-    document.getElementById('homeButton')?.addEventListener('click', () => window.location.href = 'index.html');
-    document.getElementById('watchlistBtn')?.addEventListener('click', showWatchlist);
     document.getElementById('goToTopBtn').addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     document.getElementById('goToHomeBtn').addEventListener('click', () => {
         window.location.href = 'index.html';
     });
+    document.getElementById('helpButton')?.addEventListener('click', showHelpPopup);
+});
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const searchTerm = search.value.trim();
+    if (searchTerm) getMovies(SEARCH_API + searchTerm);
+    search.value = '';
+});
+
+search.addEventListener('input', (e) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        const query = e.target.value.trim();
+        if (query) showAutocompleteSuggestions(query);
+        else hideAutocomplete();
+    }, 300);
 });
 
 function setupLanguageSections() {
@@ -120,26 +133,43 @@ async function getMovies(url) {
     }
 }
 
-// New function to load trending movies into #trendingMovies
-async function getTrendingMovies(url) {
+async function getTrendingMovies() {
     if (!trendingMovies) {
         console.error('Trending movies element not found');
         return;
     }
     spinner.style.display = 'block';
+    
+    const url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=release_date.desc&with_original_language=ml&vote_count.gte=50&include_adult=false&page=1`;
+    
     try {
         const res = await fetch(url);
-        if (!res.ok) throw new Error(`Failed to fetch trending movies: ${res.status}`);
+        if (!res.ok) throw new Error(`Failed to fetch trending Malayalam movies: ${res.status}`);
         const data = await res.json();
-        const safeMovies = filterSafeMovies(data.results || []);
+        const malayalamSectionMovies = document.getElementById('malayalamMovies').querySelectorAll('.movie');
+        const existingIds = Array.from(malayalamSectionMovies).map(movie => {
+            const id = movie.querySelector('.add-watchlist')?.dataset.id;
+            return id ? parseInt(id) : null;
+        }).filter(id => id !== null);
+
+        const safeMovies = filterSafeMovies(data.results || [])
+            .filter(movie => !existingIds.includes(movie.id)) // Exclude movies already in Malayalam section
+            .filter(movie => movie.title !== "All We Imagine as Light") // Exclude specific movie
+            .slice(0, 10); // Limit to 10 movies
+        
         if (safeMovies.length === 0) {
-            trendingMovies.innerHTML = '<p>No trending movies found.</p>';
+            trendingMovies.innerHTML = '<p>No new trending Malayalam movies found.</p>';
         } else {
+            trendingMovies.innerHTML = ''; // Clear previous content
+            const heading = document.createElement('h2');
+            heading.classList.add('trending-heading');
+            heading.textContent = 'Trending Movies';
+            trendingMovies.parentElement.insertBefore(heading, trendingMovies); // Insert heading before the movie grid
             showTrendingMovies(safeMovies);
         }
     } catch (error) {
-        console.error('Error fetching trending movies:', error);
-        trendingMovies.innerHTML = '<p>Error loading trending movies. Please try again later.</p>';
+        console.error('Error fetching trending Malayalam movies:', error);
+        trendingMovies.innerHTML = '<p>Error loading trending movies.</p>';
     } finally {
         spinner.style.display = 'none';
     }
@@ -193,11 +223,11 @@ async function getMoviesByGenre(genreId) {
 async function fetchMoviesAcrossPages(url, pages, limit) {
     let movies = [];
     for (let page = 1; page <= pages; page++) {
-        const pageUrl = url.includes('trending') ? url : `${url}&page=${page}`;
+        const pageUrl = `${url}&page=${page}`;
         const res = await fetch(pageUrl);
         if (!res.ok) throw new Error(`Failed to fetch page ${page}: ${res.status}`);
         const data = await res.json();
-        movies.push(...(data.results || data.movies || []));
+        movies.push(...(data.results || []));
     }
     return filterSafeMovies(movies).slice(0, limit);
 }
@@ -223,9 +253,7 @@ function showMovies(movies) {
     });
 }
 
-// New function to show trending movies in #trendingMovies
 function showTrendingMovies(movies) {
-    trendingMovies.innerHTML = '';
     if (movies.length === 0) {
         trendingMovies.innerHTML = '<p>No trending movies to display.</p>';
         return;
@@ -290,13 +318,6 @@ function createMovieElement(movie) {
     return movieEl;
 }
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const searchTerm = search.value.trim();
-    if (searchTerm) getMovies(SEARCH_API + searchTerm);
-    search.value = '';
-});
-
 function addToWatchlist(event) {
     const { id, title, poster, overview } = event.target.dataset;
     let watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
@@ -345,7 +366,7 @@ function showWatchlist() {
         movieEl.querySelector('.remove-watchlist').addEventListener('click', (e) => {
             e.stopPropagation();
             removeFromWatchlist(item.id);
-            showWatchlist(); // Refresh the watchlist view in main section
+            showWatchlist();
         });
         movieEl.querySelector('.more').addEventListener('click', (e) => {
             e.stopPropagation();
@@ -417,44 +438,68 @@ function removeFromWatchlist(id) {
     showPopup('✅ Removed from watchlist!');
 }
 
-async function watchMovie(movieTitle, trailerContainer) {
-    try {
-        const response = await fetch(`${YOUTUBE_SEARCH_API}?part=snippet&q=${encodeURIComponent(movieTitle + ' full movie')}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`);
-        if (!response.ok) throw new Error(`Failed to fetch movie: ${response.status}`);
-        const data = await response.json();
-        if (data.items && data.items.length > 0) {
-            const videoId = data.items[0].id.videoId;
-            document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}`; // No autoplay
-            trailerContainer.style.display = 'block';
-            document.getElementById('watchMovieButton').textContent = 'Hide Movie';
-        } else {
-            document.getElementById('trailerContainer').style.display = 'none';
-            document.getElementById('trailerContainer').innerHTML = '<p style="color: #ffea80;">❌ Full movie not found on YouTube.</p>';
-        }
-    } catch (error) {
-        console.error('Error fetching movie:', error);
-        document.getElementById('trailerContainer').style.display = 'none';
-        document.getElementById('trailerContainer').innerHTML = '<p style="color: #ffea80;">❌ Error loading movie. Please try again.</p>';
-    }
+function showAutocompleteSuggestions(query) {
+    const malayalamUrl = `${SEARCH_API}${query}&with_original_language=ml`;
+    const generalUrl = `${SEARCH_API}${query}`;
+    
+    Promise.all([
+        fetch(malayalamUrl).then(res => res.json()),
+        fetch(generalUrl).then(res => res.json())
+    ])
+    .then(([malayalamData, generalData]) => {
+        const malayalamMovies = filterSafeMovies(malayalamData.results || []).slice(0, 5);
+        const otherMovies = filterSafeMovies(generalData.results || [])
+            .filter(movie => !malayalamMovies.some(m => m.id === movie.id))
+            .slice(0, 5);
+        
+        const suggestions = [...malayalamMovies, ...otherMovies].slice(0, 10);
+        displayAutocomplete(suggestions);
+    })
+    .catch(error => {
+        console.error('Error fetching suggestions:', error);
+        hideAutocomplete();
+    });
 }
 
-async function showTrailer(movieTitle, trailerContainer) {
-    try {
-        const response = await fetch(`${YOUTUBE_SEARCH_API}?part=snippet&q=${encodeURIComponent(movieTitle + ' official trailer')}&type=video&maxResults=1&key=${YOUTUBE_API_KEY}`);
-        if (!response.ok) throw new Error(`Failed to fetch trailer: ${response.status}`);
-        const data = await response.json();
-        if (data.items && data.items.length > 0) {
-            const videoId = data.items[0].id.videoId;
-            document.getElementById('trailerFrame').src = `https://www.youtube.com/embed/${videoId}`; // No autoplay
-            trailerContainer.style.display = 'block';
-            document.getElementById('trailerButton').textContent = 'Hide Trailer';
-        } else {
-            showPopup('❌ No trailer found for this movie.');
-        }
-    } catch (error) {
-        console.error('Error fetching trailer:', error);
-        showPopup('❌ Error loading trailer. Please try again.');
+function displayAutocomplete(movies) {
+    let autocomplete = document.getElementById('autocomplete');
+    if (!autocomplete) {
+        autocomplete = document.createElement('div');
+        autocomplete.id = 'autocomplete';
+        autocomplete.style.position = 'absolute';
+        autocomplete.style.background = '#fff';
+        autocomplete.style.color = '#000';
+        autocomplete.style.borderRadius = '10px';
+        autocomplete.style.width = '20rem';
+        autocomplete.style.maxHeight = '200px';
+        autocomplete.style.overflowY = 'auto';
+        autocomplete.style.zIndex = '1000';
+        autocomplete.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+        search.parentElement.appendChild(autocomplete);
     }
+    
+    autocomplete.style.left = `${search.offsetLeft}px`;
+    autocomplete.style.top = `${search.offsetTop + search.offsetHeight}px`;
+    
+    autocomplete.innerHTML = movies.map(movie => `
+        <div class="suggestion" style="padding: 8px; cursor: pointer; border-bottom: 1px solid #ddd;"
+             data-title="${movie.title}">
+            ${movie.title}
+        </div>
+    `).join('');
+    
+    autocomplete.querySelectorAll('.suggestion').forEach(suggestion => {
+        suggestion.addEventListener('click', () => {
+            search.value = suggestion.dataset.title;
+            getMovies(SEARCH_API + suggestion.dataset.title);
+            hideAutocomplete();
+        });
+    });
+}
+
+function hideAutocomplete() {
+    const autocomplete = document.getElementById('autocomplete');
+    if (autocomplete) autocomplete.remove();
 }
 
 function openMorePopup(movieTitle, overviewText) {
@@ -464,12 +509,7 @@ function openMorePopup(movieTitle, overviewText) {
         <div class="popup-content">
             <h2>${movieTitle}</h2>
             <p>${overviewText || 'No overview available.'}</p>
-            <div id="trailerContainer" style="display: none;">
-                <iframe id="trailerFrame" width="100%" height="315" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </div>
-            <button id="messageButton">Message Me</button>
-            <button id="trailerButton">Watch Trailer</button>
-            <button id="watchMovieButton">Watch Movie</button>
+            <button id="messageButton">Watch</button>
             <button id="closePopUpButton">Close</button>
         </div>
     `;
@@ -477,32 +517,11 @@ function openMorePopup(movieTitle, overviewText) {
 
     const closeButton = document.getElementById('closePopUpButton');
     const messageButton = document.getElementById('messageButton');
-    const trailerButton = document.getElementById('trailerButton');
-    const watchMovieButton = document.getElementById('watchMovieButton');
-    const trailerContainer = document.getElementById('trailerContainer');
 
     closeButton.addEventListener('click', () => moviePopUp.remove());
     messageButton.addEventListener('click', () => {
         localStorage.setItem('selectedMovie', movieTitle);
         window.location.href = 'form.html';
-    });
-    trailerButton.addEventListener('click', () => {
-        if (trailerContainer.style.display === 'none') {
-            showTrailer(movieTitle, trailerContainer);
-        } else {
-            trailerContainer.style.display = 'none';
-            trailerButton.textContent = 'Watch Trailer';
-            document.getElementById('trailerFrame').src = '';
-        }
-    });
-    watchMovieButton.addEventListener('click', () => {
-        if (trailerContainer.style.display === 'none') {
-            watchMovie(movieTitle, trailerContainer);
-        } else {
-            trailerContainer.style.display = 'none';
-            watchMovieButton.textContent = 'Watch Movie';
-            document.getElementById('trailerFrame').src = '';
-        }
     });
 }
 
@@ -516,39 +535,80 @@ function showPopup(message) {
         </div>
     `;
     document.body.appendChild(popup);
-    document.getElementById('closePopupButton').addEventListener('click', () => popup.remove());
+
+    const closeButton = popup.querySelector('#closePopupButton');
+    closeButton.addEventListener('click', () => {
+        popup.remove();
+    });
 }
 
-document.getElementById("helpButton")?.addEventListener("click", showHelpPopup);
+async function sendToTelegram(message) {
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+            }),
+        });
+        if (!response.ok) throw new Error('Failed to send message to Telegram');
+        return true;
+    } catch (error) {
+        console.error('Error sending to Telegram:', error);
+        return false;
+    }
+}
 
 function showHelpPopup() {
     const popupContent = document.createElement('div');
-    popupContent.classList.add('popup-content');
-    popupContent.style.position = 'fixed';
-    popupContent.style.top = '50%';
-    popupContent.style.left = '50%';
-    popupContent.style.transform = 'translate(-50%, -50%)';
-    popupContent.style.maxWidth = '400px';
-    popupContent.style.textAlign = 'center';
-    popupContent.style.backgroundColor = '#000000';
-    popupContent.style.padding = '70px';
+    popupContent.classList.add('popup');
     popupContent.innerHTML = `
-        <h1 style="color: #28a745; margin-bottom: 15px; font-size: 24px;">Need Help?</h1>
-        <p style="color: #fff3b0; line-height: 1.5; font-size: 18px;">For assistance, watch the video below 👇</p>
-        <a href="#" style="display: inline-block; margin: 15px 0; color: #28a745; text-decoration: none; font-weight: bold; font-size: 18px;">Click Here</a><br>
-        <button id="closePopupButton" style="background-color: #28a745; color: #ffffff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Close</button>
+        <div class="popup-content">
+            <h2>Need Help?</h2>
+            <p>Submit your question and email below:</p>
+            <textarea id="helpQuestion" placeholder="Type your question here..." rows="4" style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none;"></textarea>
+            <input type="email" id="helpEmail" placeholder="Your email address" style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none;">
+            <p id="emailError" style="color: #ff4040; display: none;">Please enter a valid email address.</p>
+            <button id="submitHelpButton">Submit</button>
+            <button id="closePopupButton">Close</button>
+        </div>
     `;
     document.body.appendChild(popupContent);
-    const link = popupContent.querySelector('a');
-    const closeButton = popupContent.querySelector('#closePopupButton');
+
+    const submitButton = document.getElementById('submitHelpButton');
+    const closeButton = document.getElementById('closePopupButton');
+    const emailInput = document.getElementById('helpEmail');
+    const questionInput = document.getElementById('helpQuestion');
+    const emailError = document.getElementById('emailError');
+
     closeButton.addEventListener('click', () => popupContent.remove());
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        popupContent.innerHTML = `
-            <h1 style="color: #28a745; margin-bottom: 15px; font-size: 24px;">Tutorial</h1>
-            <iframe width="100%" height="315" src="https://drive.google.com/file/d/1eM-23YvQ1xDD-IMl5jyLxxeQBzidmWjG/preview" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            <button id="closePopupButton" style="background-color: #28a745; color: #ffffff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 20px;">Close</button>
-        `;
-        popupContent.querySelector('#closePopupButton').addEventListener('click', () => popupContent.remove());
+
+    submitButton.addEventListener('click', async () => {
+        const email = emailInput.value.trim();
+        const question = questionInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            emailError.style.display = 'block';
+            return;
+        }
+        if (!question) {
+            showPopup('❌ Please enter a question.');
+            return;
+        }
+
+        const message = `New Help Request:\nEmail: ${email}\nQuestion: ${question}`;
+        const sent = await sendToTelegram(message);
+
+        if (sent) {
+            showPopup('✅ Your question has been submitted!');
+            popupContent.remove();
+        } else {
+            showPopup('❌ Failed to submit your question. Please try again.');
+        }
     });
 }

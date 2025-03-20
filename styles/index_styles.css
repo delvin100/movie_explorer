@@ -55,6 +55,14 @@ body {
     transform: scale(1.1);
 }
 
+.logo img {
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.1);
+}
+
 /* Navigation Links */
 .nav-links {
     display: flex;
@@ -212,11 +220,11 @@ body {
     padding: 40px;
     border-radius: 10px;
     width: 50%;
-    text-align: center; /* Changed to center for better presentation */
+    text-align: center;
     box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.7);
     border: 2px solid #ff0000;
     max-height: 80vh;
-    overflow-y: auto; /* Added for scroll if content exceeds */
+    overflow-y: auto;
 }
 
 /* Modal Heading */
@@ -238,7 +246,7 @@ body {
     margin-bottom: 15px;
 }
 
-/* Tech Stack (Updated to remove red semi-transparent background) */
+/* Tech Stack */
 .tech-stack {
     display: flex;
     justify-content: center;
@@ -246,10 +254,9 @@ body {
     flex-wrap: wrap;
     margin: 20px 0;
     padding: 10px;
-    /* Removed background-color: rgba(255, 0, 0, 0.1); */
 }
 
-/* Tech Item (Circular styling remains unchanged) */
+/* Tech Item */
 .tech-item {
     background-color: #ff0000;
     color: #fff;
@@ -287,6 +294,73 @@ body {
 .close-btn:hover {
     background-color: darkred;
     transform: scale(1.05);
+}
+
+/* Admin Login */
+.admin-login {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.admin-login input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ff0000;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+}
+
+.admin-login button {
+    background-color: #ff0000;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admin-login button:hover {
+    background-color: darkred;
+}
+
+/* Admin Content */
+.admin-content h3 {
+    margin: 20px 0;
+    font-size: 24px;
+}
+
+.request-item {
+    background-color: #333;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: left;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+.request-item p:last-child {
+    font-style: italic;
+    color: #ff6666; /* Lighter red for timestamp */
+}
+
+/* Complete Button */
+.complete-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.complete-btn:hover {
+    background-color: #218838;
 }
 
 /* Responsive Design */

@@ -14,14 +14,14 @@
             <span><i>"The name's Pool... Deadpool..."</i></span>
         </div>
         <div class="logo">
-            <img src="images/logo.png" alt="Metflix Logo" style="height:65px;">
+            <img id="adminLogo" src="images/logo.png" alt="Metflix Logo" style="height:65px;">
         </div>
     </div>
     
     <div class="container">
         <h1 class="title">METFLIX</h1>
         <div class="image-wrapper">
-            <img id="image" src="images/deadpool1.png" alt="Deadpool">
+            <img id="image" src="images/deadpool1.png" alt="Deadpool" data-hover="images/deadpool2.png">
         </div>
     </div>
 
@@ -29,7 +29,7 @@
         <a href="https://github.com/delvin100" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
         <a href="https://www.linkedin.com/in/delvin-varghese-1811342b8?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
         <a href="https://www.instagram.com/_delvin_varghese_?utm_source=qr&igsh=bXBseTk0dGF1aHpr" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="/cdn-cgi/l/email-protection#65010009130c0b130417020d0016005755575d250806044b040f06004b0c0b" title="Email Us"><i class="fas fa-envelope"></i></a>
+        <a href="/cdn-cgi/l/email-protection#25510009130c0b130417020d0016005755575d255806044b040f06004b0c0b" title="Email Us"><i class="fas fa-envelope"></i></a>
     </div>
 
     <div class="fixed-buttons">
@@ -37,13 +37,12 @@
         <button class="btn btn-white" id="aboutBtn">About</button>
     </div>
 
+    <!-- About Modal -->
     <div class="modal" id="aboutModal">
         <div class="modal-content">
             <h2>About Metflix</h2>
             <p>Welcome to <span class="highlight">Metflix</span>—a cutting-edge microproject crafted to redefine movie discovery! Designed as an intelligent movie companion, Metflix merges creativity, technical prowess, and user-centric design to deliver a seamless and exhilarating cinematic experience tailored for movie enthusiasts.</p>
-            
             <p><strong>Purpose & Vision:</strong> Metflix is my showcase of modern web development skills and API integration mastery. It’s not just a tool—it’s a bold proof of concept that reimagines how users explore and engage with movies, bridging the gap between technology and entertainment with flair.</p>
-            
             <p><strong>Powered By:</strong></p>
             <div class="tech-stack">
                 <div class="tech-item">HTML5/CSS3/JS</div>
@@ -51,30 +50,43 @@
                 <div class="tech-item">YouTube API</div>
                 <div class="tech-item">Telegram API</div>
             </div>
-            
             <p><strong>Standout Features:</strong><br>
                 ⭐ <em>Smart Search:</em> Instantly find films by title, genre, actor, or even mood—powered by intuitive algorithms.<br>
                 ⭐ <em>Movie Insights:</em> Dive into detailed ratings, summaries, cast info, and reviews, all in one sleek interface.<br>
                 ⭐ <em>Trailer Integration:</em> Watch high-quality previews seamlessly via YouTube API without leaving the app.<br>
                 ⭐ <em>Interactive UI:</em> Enjoy dynamic image swaps and a responsive design optimized for all devices.</p>
-            
             <p><strong>Development Journey:</strong> Creating Metflix was a thrilling challenge! I tackled API rate limits, optimized data fetching for speed, and ensured cross-browser compatibility—all while maintaining a visually stunning black-and-red theme inspired by cinematic vibes. The result? A robust, efficient app that’s as fun to use as it was to build.</p>
-            
             <p><strong>Unique Edge:</strong> Unlike generic movie sites, Metflix integrates Telegram API for real-time user feedback and notifications—a feature I pioneered to enhance interactivity. This microproject also leverages asynchronous JavaScript for smooth performance, showcasing my ability to handle complex logic under tight deadlines.</p>
-            
             <p><strong>Impact & Future Potential:</strong> Metflix isn’t just for today—it’s a foundation for tomorrow. With plans to add AI-driven recommendations and a personalized watchlist, it could evolve into a full-fledged movie platform. For now, it’s a testament to what’s possible with passion and code.</p>
-            
             <p>Developed by <span class="highlight">Delvin Varghese</span>, Metflix reflects my dedication to technical excellence, creative problem-solving, and delivering user delight.</p>
-            
             <button class="close-btn" id="closeBtn">Close</button>
         </div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <!-- Admin Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <h2>Admin Panel</h2>
+            <div id="adminLogin" class="admin-login">
+                <input type="password" id="adminPassword" placeholder="Enter Admin Password">
+                <button id="submitAdminPassword">Login</button>
+            </div>
+            <div id="adminContent" class="admin-content" style="display: none;">
+                <h3>User Requests</h3>
+                <div id="requestList"></div>
+                <button class="close-btn" id="closeAdminBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+        // Get Started Button
         document.getElementById('getStartedBtn').addEventListener('click', function() {
             window.location.href = 'movie.html';
         });
 
+        // About Modal
         document.getElementById('aboutBtn').addEventListener('click', function() {
             document.getElementById('aboutModal').style.display = 'flex';
         });
@@ -89,19 +101,144 @@
             }
         });
 
+        // Image Hover Fix
         const image = document.getElementById('image');
         if (image) {
+            const defaultImage = image.src;
+            const hoverImage = image.dataset.hover;
+
             image.addEventListener('mouseover', function() {
-                console.log('Mouse over: Switching to deadpool2');
-                image.src = "images/deadpool2.png";
+                image.src = hoverImage || 'images/deadpool2.png';
             });
+
             image.addEventListener('mouseout', function() {
-                console.log('Mouse out: Switching to deadpool1');
-                image.src = "images/deadpool1.png";
+                image.src = defaultImage || 'images/deadpool1.png';
             });
+
+            fetch(defaultImage).catch(() => console.error('Default image not found:', defaultImage));
+            fetch(hoverImage).catch(() => console.error('Hover image not found:', hoverImage));
         } else {
             console.error('Image element not found');
         }
+
+        // Admin Panel Logic
+        const adminLogo = document.getElementById('adminLogo');
+        const adminModal = document.getElementById('adminModal');
+        const adminPasswordInput = document.getElementById('adminPassword');
+        const submitAdminPassword = document.getElementById('submitAdminPassword');
+        const adminContent = document.getElementById('adminContent');
+        const requestList = document.getElementById('requestList');
+        const closeAdminBtn = document.getElementById('closeAdminBtn');
+        const ADMIN_PASSWORD = 'admin123';
+
+        adminLogo.addEventListener('dblclick', function() {
+            adminModal.style.display = 'flex';
+            adminPasswordInput.focus();
+        });
+
+        submitAdminPassword.addEventListener('click', function() {
+            const enteredPassword = adminPasswordInput.value.trim();
+            if (enteredPassword === ADMIN_PASSWORD) {
+                document.getElementById('adminLogin').style.display = 'none';
+                adminContent.style.display = 'block';
+                displayUserRequests();
+            } else {
+                alert('Incorrect password!');
+            }
+            adminPasswordInput.value = '';
+        });
+
+        adminPasswordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                submitAdminPassword.click();
+            }
+        });
+
+        closeAdminBtn.addEventListener('click', function() {
+            adminModal.style.display = 'none';
+            adminContent.style.display = 'none';
+            document.getElementById('adminLogin').style.display = 'block';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === adminModal) {
+                adminModal.style.display = 'none';
+                adminContent.style.display = 'none';
+                document.getElementById('adminLogin').style.display = 'block';
+            }
+        });
+
+        // Utility function to format timestamp
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+        }
+
+        // Function to display user requests with formatted timestamps and complete button
+        function displayUserRequests() {
+            const requests = JSON.parse(localStorage.getItem('userRequests') || '[]');
+            requestList.innerHTML = '';
+            if (requests.length === 0) {
+                requestList.innerHTML = '<p>No user requests found.</p>';
+            } else {
+                requests.forEach((req, index) => {
+                    const reqDiv = document.createElement('div');
+                    reqDiv.classList.add('request-item');
+                    const formattedTimestamp = req.timestamp ? formatTimestamp(req.timestamp) : 'Unknown';
+                    reqDiv.innerHTML = `
+                        <p><strong>Request #${index + 1}</strong></p>
+                        <p>Name: ${req.name || 'N/A'}</p>
+                        <p>Email: ${req.email || 'N/A'}</p>
+                        <p>Phone: ${req.phone || 'N/A'}</p>
+                        <p>Movie: ${req.movie || 'N/A'}</p>
+                        <p>Language: ${req.language || 'N/A'}</p>
+                        <p>Quality: ${req.quality || 'N/A'}</p>
+                        <p>Timestamp: ${formattedTimestamp}</p>
+                        <button class="complete-btn" data-index="${index}">✔ Complete</button>
+                    `;
+                    requestList.appendChild(reqDiv);
+                });
+
+                // Add event listeners for complete buttons
+                document.querySelectorAll('.complete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = this.dataset.index;
+                        let requests = JSON.parse(localStorage.getItem('userRequests') || '[]');
+                        requests.splice(index, 1); // Remove the completed request
+                        localStorage.setItem('userRequests', JSON.stringify(requests));
+                        displayUserRequests(); // Refresh the list
+                    });
+                });
+            }
+        }
+
+        // Example function to add a request (for testing purposes)
+        function addSampleRequest() {
+            const sampleRequest = {
+                name: "John Doe",
+                email: "john@example.com",
+                phone: "123-456-7890",
+                movie: "Deadpool",
+                language: "English",
+                quality: "1080p",
+                timestamp: Date.now() // Current timestamp in milliseconds
+            };
+            const requests = JSON.parse(localStorage.getItem('userRequests') || '[]');
+            requests.push(sampleRequest);
+            localStorage.setItem('userRequests', JSON.stringify(requests));
+        }
+
+        // Uncomment the line below to add a sample request for testing
+        // addSampleRequest();
     </script>
-</body>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'923102adaf61afa1',t:'MTc0MjQyOTY3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'923139eef8a369e2',t:'MTc0MjQzMTk0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

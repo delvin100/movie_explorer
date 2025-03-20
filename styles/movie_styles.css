@@ -22,7 +22,7 @@ body {
   --card-bg: #000000; 
 }
 
-/* Navigation Bar (Added from index_styles.css) */
+/* Navigation Bar */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -41,7 +41,7 @@ body {
   background-color: black;
 }
 
-/* Logo (Added from index_styles.css) */
+/* Logo */
 .logo {
   font-size: 28px;
   font-weight: bold;
@@ -56,9 +56,8 @@ body {
   transform: scale(1.1);
 }
 
-/* Logo Image Styling (Adjusted for inline style compatibility) */
 .logo img {
-  height: 65px; /* Matches the inline style from HTML */
+  height: 65px;
   transition: all 0.3s ease, transform 0.2s ease;
 }
 
@@ -66,7 +65,7 @@ body {
   transform: scale(1.1);
 }
 
-/* Navigation Links (Added from index_styles.css) */
+/* Navigation Links */
 .nav-links {
   display: flex;
   gap: 20px;
@@ -130,6 +129,23 @@ body {
   transform: scale(1.15);
 }
 
+/* Autocomplete */
+#autocomplete {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    border-radius: 10px;
+    width: 20rem;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.suggestion:hover {
+    background: #f0f0f0;
+}
+
 /* Main Section */
 .home-main {
   text-align: center;
@@ -167,8 +183,8 @@ body {
 
 /* Trending Movies Section */
 #trendingSection {
-  text-align: center;
-  padding: 1.875rem;
+  margin: 2.5rem 0;
+  text-align: center; /* Center-aligns all content within */
 }
 
 .trending-heading {
@@ -177,15 +193,15 @@ body {
   color: #ffd700;
   text-transform: uppercase;
   text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
-  margin: 20px 0;
+  margin-bottom: 20px; /* Space between heading and movies */
 }
 
 #trendingMovies {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5625rem;
-  justify-content: center;
-  padding: 1.875rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr));
+  gap: 1.25rem;
+  padding: 0 1.875rem;
+  justify-items: center; /* Centers the grid items */
 }
 
 /* Movie Cards */
@@ -197,7 +213,6 @@ body {
   padding: 1.875rem;
 }
 
-/* Collapse #main when empty to remove black space */
 #main:empty {
   padding: 0;
   height: 0;
@@ -436,17 +451,10 @@ body {
   box-shadow: 0 0 15px rgba(255, 64, 64, 0.8);
 }
 
-#trailerContainer {
-  margin: 1.25rem 0;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(255, 64, 64, 0.4);
-}
-
-#trailerFrame {
-  width: 100%;
-  height: 19.6875rem;
-  border: none;
+#emailError {
+  color: #000000;
+  display: none;
+  margin: 10px 0;
 }
 
 /* Fixed Buttons */
@@ -563,6 +571,7 @@ body {
   text-transform: uppercase;
   text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
   margin-bottom: 10px;
+  text-align: center;
 }
 
 /* Genre Buttons */
@@ -831,16 +840,20 @@ body {
     font-size: 0.8rem;
   }
 
-  .watchlist-section, #trendingSection {
+  .watchlist-section {
     padding: 1.25rem;
   }
 
-  .watchlist-section h2, #trendingSection h2 {
+  .watchlist-section h2 {
     font-size: 1.5rem;
   }
 
   .watchlist-section .featured-grid {
     gap: 1rem;
+  }
+
+  #trendingSection {
+    margin: 1.5rem 0;
   }
 }
 
@@ -971,15 +984,19 @@ body {
     font-size: 0.7rem;
   }
 
-  .watchlist-section, #trendingSection {
+  .watchlist-section {
     padding: 0.625rem;
   }
 
-  .watchlist-section h2, #trendingSection h2 {
+  .watchlist-section h2 {
     font-size: 1.2rem;
   }
 
   .watchlist-section .featured-grid {
     grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr));
+  }
+
+  #trendingSection {
+    margin: 1rem 0;
   }
 }

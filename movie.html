@@ -34,13 +34,11 @@
         <div id="main"></div>
         <!-- Watchlist Section -->
         <div id="watchlistSection" class="watchlist-section"></div>
-        <!-- Trending Movies Section -->
+        <!-- Trending Movies Section (Centered on Page) -->
         <div id="trendingSection">
-            <h2 class="trending-heading">Trending Movies</h2>
             <div id="spinner" class="spinner"></div>
-            <div id="trendingMovies"><p>Loading trending movies...</p></div>
+            <div id="trendingMovies"></div>
         </div>
-
         <!-- Language Sections with Genre Buttons Under Titles -->
         <div class="language-section" id="malayalamSection">
             <h2 class="language-heading">Malayalam Movies</h2>
@@ -73,7 +71,7 @@
         </button>
     </div>
     <button id="goToHomeBtn" class="logo-button">
-        <img src="images/go_to_home.png" alt="Go to Home">
+        <img src="https://cdn3.iconfinder.com/data/icons/basic-ui-5/48/home-512.png" alt="Go to Home">
     </button>
 
     <script src="script.js"></script>
@@ -85,17 +83,6 @@
                 section.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
-
-        // Function to scroll to top
-        document.getElementById('goToTopBtn').addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Function to navigate to homepage
-        document.getElementById('goToHomeBtn').addEventListener('click', () => {
-            window.location.href = 'index.html';
-        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91967192d81e12d2',t:'MTc0MDgwODkyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91dbe961afc444ed',t:'MTc0MTUzNzM1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
