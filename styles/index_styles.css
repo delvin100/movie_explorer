@@ -21,7 +21,6 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Navigation Bar */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -40,7 +39,6 @@ body {
     background-color: black;
 }
 
-/* Logo */
 .logo {
     font-size: 28px;
     font-weight: bold;
@@ -63,7 +61,6 @@ body {
     transform: scale(1.1);
 }
 
-/* Navigation Links */
 .nav-links {
     display: flex;
     gap: 20px;
@@ -83,14 +80,12 @@ body {
     text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
 }
 
-/* Main Content */
 .container {
     position: relative;
     text-align: center;
     margin-top: 30px;
 }
 
-/* Image Wrapper */
 .image-wrapper {
     width: 100%;
     height: 300px;
@@ -110,7 +105,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Title */
 .title {
     font-size: 70px;
     font-weight: bold;
@@ -125,7 +119,6 @@ body {
     100% { text-shadow: 0px 0px 25px rgba(255, 0, 0, 1); }
 }
 
-/* Contact Bar */
 .contact-bar {
     position: fixed;
     right: 0;
@@ -153,7 +146,6 @@ body {
     text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
 }
 
-/* Fixed Buttons */
 .fixed-buttons {
     position: fixed;
     bottom: 40px;
@@ -200,7 +192,6 @@ body {
     box-shadow: 0px 0px 20px rgba(255, 255, 255, 1);
 }
 
-/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -213,6 +204,13 @@ body {
     justify-content: center;
     align-items: center;
     color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    opacity: 1;
 }
 
 .modal-content {
@@ -225,9 +223,15 @@ body {
     border: 2px solid #ff0000;
     max-height: 80vh;
     overflow-y: auto;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
 }
 
-/* Modal Heading */
+.modal.active .modal-content {
+    transform: scale(1);
+}
+
 .modal-content h2 {
     font-size: 36px;
     color: #ffffff;
@@ -238,7 +242,6 @@ body {
     text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
-/* Modal Paragraphs */
 .modal-content p {
     font-size: 16px;
     line-height: 1.6;
@@ -246,7 +249,6 @@ body {
     margin-bottom: 15px;
 }
 
-/* Tech Stack */
 .tech-stack {
     display: flex;
     justify-content: center;
@@ -256,7 +258,6 @@ body {
     padding: 10px;
 }
 
-/* Tech Item */
 .tech-item {
     background-color: #ff0000;
     color: #fff;
@@ -272,14 +273,12 @@ body {
     transform: scale(1.1);
 }
 
-/* Highlight Class */
 .highlight {
     color: #ff0000;
     font-weight: bold;
     text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
 
-/* Close Button */
 .close-btn {
     background-color: red;
     color: white;
@@ -296,7 +295,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Admin Login */
 .admin-login {
     display: flex;
     flex-direction: column;
@@ -327,7 +325,6 @@ body {
     background-color: darkred;
 }
 
-/* Admin Content */
 .admin-content h3 {
     margin: 20px 0;
     font-size: 24px;
@@ -344,10 +341,9 @@ body {
 
 .request-item p:last-child {
     font-style: italic;
-    color: #ff6666; /* Lighter red for timestamp */
+    color: #ff6666;
 }
 
-/* Complete Button */
 .complete-btn {
     background-color: #28a745;
     color: white;
@@ -363,7 +359,21 @@ body {
     background-color: #218838;
 }
 
-/* Responsive Design */
+.admin-close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #ff0000;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-close-icon:hover {
+    color: darkred;
+    transform: scale(1.2);
+}
+
 @media screen and (max-width: 768px) {
     .navbar {
         flex-direction: column;
